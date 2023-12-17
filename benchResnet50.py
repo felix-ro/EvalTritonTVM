@@ -8,7 +8,7 @@ PATH = "Results/"
 MODEL_NAME = "resnet50"
 
 def timing(opt_model, model, device, reps, iters):
-    fileName = PATH + MODEL_NAME + "/" + "results-" + MODEL_NAME + "-optimized.txt"
+    fileName = PATH + MODEL_NAME + "/" + "results-" + MODEL_NAME + "-optimized-" + device + ".txt"
     f = open(fileName, "w")
     results = ""
     print("Optimized model: ")
@@ -18,7 +18,7 @@ def timing(opt_model, model, device, reps, iters):
         results += str(t.timeit(number=iters)/iters) + "\n"
     f.write(results)
 
-    fileName = PATH + MODEL_NAME + "/" + "results-" + MODEL_NAME + "-unoptimized.txt"
+    fileName = PATH + MODEL_NAME + "/" + "results-" + MODEL_NAME + "-unoptimized-" + device + ".txt"
     f = open(fileName, "w")
     results = ""
     print("Unoptimized model: ")
@@ -30,7 +30,7 @@ def timing(opt_model, model, device, reps, iters):
 
 
 def profiler(opt_model, model, device, useCuda):
-    fileName = PATH + MODEL_NAME + "/" + "profile-" + MODEL_NAME + "-optimized.txt"
+    fileName = PATH + MODEL_NAME + "/" + "profile-" + MODEL_NAME + "-optimized-" + device + ".txt"
     f = open(fileName, "w")
     with torch.autograd.profiler.profile(use_cuda=useCuda) as prof:
         opt_model(torch.randn(1,3,64,64).to(device))
@@ -38,7 +38,7 @@ def profiler(opt_model, model, device, useCuda):
     f.write(prof.key_averages().table(sort_by="self_cpu_time_total", top_level_events_only= False))
     print(prof.key_averages().table(sort_by="self_cpu_time_total", top_level_events_only= False))
 
-    fileName = PATH + MODEL_NAME + "/" + "profile-" + MODEL_NAME + "-unoptimized.txt"
+    fileName = PATH + MODEL_NAME + "/" + "profile-" + MODEL_NAME + "-unoptimized-" + device + ".txt"
     f = open(fileName, "w")
     with torch.autograd.profiler.profile(use_cuda=useCuda) as prof:
         model(torch.randn(1,3,64,64).to(device))
