@@ -41,6 +41,7 @@ def main():
     batch_size = 1
     layout = "NHWC"
     target= tvm.target.Target("llvm")
+    dtype = "float32"
     log_file = "%s-%s-B%d-%s.json" % (MODEL_NAME, layout, batch_size, target.kind.name)
 
     tasks, task_weights = auto_scheduler.extract_tasks(mod["main"], params, target)
@@ -60,6 +61,22 @@ def main():
     )
 
     tuner.tune(tune_option)
+
+    # Compile with the history best
+    print("Compile...")
+    with auto_scheduler.ApplyHistoryBest(log_file):
+        with tvm.transform.PassContext(opt_level=3, config={"relay.backend.use_auto_scheduler": True}):
+            lib = relay.build(mod, target=target, params=params)
+
+    # Create graph executor
+    dev = tvm.device(str(target), 0)
+    module = tvm.contrib.graph_executor.GraphModule(lib["default"](dev))
+    data_tvm = tvm.nd.array((np.random.uniform(size=input_shape)).astype(dtype))
+    module.set_input("data", data_tvm)
+
+    # Evaluate
+    print("Evaluate inference time cost...")
+    print(module.benchmark(dev, repeat=3, min_repeat_ms=500))
 
 
 if __name__ == "__main__":
