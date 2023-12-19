@@ -1,0 +1,27 @@
+---------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                             Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg    # of Calls  
+---------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                 CompiledFunction        51.75%      21.748ms        88.22%      37.072ms      37.072ms             1  
+       aten::_slow_conv2d_forward        12.88%       5.414ms        14.65%       6.155ms     146.548us            42  
+         aten::mkldnn_convolution        11.00%       4.622ms        11.29%       4.743ms     431.182us            11  
+              aten::empty_strided         5.04%       2.116ms         5.04%       2.116ms       6.471us           327  
+                           detach         4.12%       1.731ms         4.12%       1.731ms      10.819us           160  
+                      aten::copy_         3.09%       1.298ms         3.09%       1.298ms       8.113us           160  
+         TorchDynamo Cache Lookup         2.52%       1.059ms         2.52%       1.059ms       1.059ms             1  
+                     aten::detach         1.54%     646.000us         5.15%       2.165ms      11.640us           186  
+               aten::_convolution         1.30%     545.000us        28.09%      11.805ms     222.736us            53  
+                aten::thnn_conv2d         1.09%     458.000us        14.89%       6.258ms     149.000us            42  
+                aten::convolution         1.05%     442.000us        28.84%      12.121ms     228.698us            53  
+                      aten::addmm         0.99%     415.000us         1.43%     601.000us     601.000us             1  
+                      aten::empty         0.77%     323.000us         0.77%     323.000us       4.614us            70  
+                    aten::normal_         0.71%     299.000us         0.71%     299.000us     299.000us             1  
+    inductor::_reinterpret_tensor         0.62%     262.000us         0.62%     262.000us       4.367us            60  
+                 aten::as_strided         0.55%     233.000us         0.55%     233.000us       3.377us            69  
+                    aten::resize_         0.51%     214.000us         0.51%     214.000us       4.038us            53  
+                      aten::randn         0.37%     155.000us         1.15%     483.000us     483.000us             1  
+                     aten::expand         0.07%      29.000us         0.09%      37.000us      37.000us             1  
+               aten::resolve_conj         0.01%       6.000us         0.01%       6.000us       3.000us             2  
+                         aten::to         0.01%       5.000us         0.01%       5.000us       5.000us             1  
+          aten::_nnpack_available         0.00%       2.000us         0.00%       2.000us       0.048us            42  
+---------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  
+Self CPU time total: 42.022ms

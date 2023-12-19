@@ -1,4 +1,4 @@
 model/
 .pkl_memoize_py3/
 torch_compile_debug/
-*.txt
+test_tuning.py

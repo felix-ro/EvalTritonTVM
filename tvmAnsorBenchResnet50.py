@@ -39,6 +39,7 @@ def tuneAnsor(tasks, task_weights, log_file):
 
     tuner.tune(tune_option)
 
+
 def compile(log_file, mod, target, params):
     # Compile with the history best
     print("Compile...")
@@ -53,7 +54,7 @@ def createGraphExecutor(target, lib, input_shape, dtype):
     dev = tvm.device(str(target), 0)
     module = tvm.contrib.graph_executor.GraphModule(lib["default"](dev))
     data_tvm = tvm.nd.array((np.random.uniform(size=input_shape)).astype(dtype))
-    module.set_input("data", data_tvm)
+    module.set_input("input0", data_tvm)
     return module, dev
 
 
@@ -86,17 +87,23 @@ def main():
         print(task.compute_dag)
 
     # tune the model using Ansor
-    tuneAnsor(task, task_weights, log_file)
+    # tuneAnsor(task, task_weights, log_file)
 
     # compile model with history best
-    lib = compile(log_file, mod, target, params)
+    # lib = compile(log_file, mod, target, params)
+    lib = compile("resnet50-NHWC-B1-llvm.json", mod, target, params)
 
     # create graph executor
     module, dev = createGraphExecutor(target, lib, input_shape, dtype)
 
     # Evaluate
     print("Evaluate inference time cost...")
-    print(module.benchmark(dev, repeat=3, min_repeat_ms=500))
+    res = module.benchmark(dev, repeat=3, min_repeat_ms=500)
+    print(res)
+    fileName = "Results/TVM-Ansor/" + MODEL_NAME + "/" + MODEL_NAME + "-" + TARGET_NAME + ".txt"
+    f = open(fileName, "w")
+    f.write(str(res))
+    f.close()
 
 
 if __name__ == "__main__":
