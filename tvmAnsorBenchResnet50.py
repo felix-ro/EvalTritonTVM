@@ -7,6 +7,7 @@ from tvm import relay, auto_scheduler
 from PIL import Image
 
 MODEL_NAME = "resnet50"
+TARGET = "llvm" # "cuda"
 
 def main():
     model = torch.hub.load('pytorch/vision:v0.10.0', MODEL_NAME, pretrained=True)
@@ -19,7 +20,6 @@ def main():
 
     img_url = "https://github.com/dmlc/mxnet.js/blob/main/data/cat.png?raw=true"
     img_path = tvm.contrib.download.download_testdata(img_url, "cat.png", module="data")
-    print(img_path)
     img = Image.open(img_path).resize((224, 224))
 
     my_preprocess = transforms.Compose(
@@ -37,10 +37,10 @@ def main():
     shape_list = [(input_name, img.shape)]
     mod, params = relay.frontend.from_pytorch(scripted_model, shape_list)
 
+    target= tvm.target.Target(TARGET)
 
     batch_size = 1
     layout = "NHWC"
-    target= tvm.target.Target("llvm")
     dtype = "float32"
     log_file = "%s-%s-B%d-%s.json" % (MODEL_NAME, layout, batch_size, target.kind.name)
 
