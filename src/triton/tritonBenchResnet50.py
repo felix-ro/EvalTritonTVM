@@ -4,7 +4,7 @@ import torch
 import torch._dynamo
 import torch._inductor.config
 
-PATH = "Results/"
+PATH = "Results/Triton"
 MODEL_NAME = "resnet50"
 
 def timing(opt_model, model, device, reps, iters):
