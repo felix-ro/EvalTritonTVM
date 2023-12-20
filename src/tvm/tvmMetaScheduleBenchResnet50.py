@@ -12,7 +12,7 @@ import tvm.contrib.graph_executor as graph_executor
 from utils import getImage
 
 MODEL_NAME = "resnet50"
-TARGET_NAME = "llvm -num-cores 16" # "cuda"
+TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake" # "cuda"
 WORK_DIR = "Results/TVM-MetaSchedule/"
 
 
@@ -39,8 +39,12 @@ def tune(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
     
     # 'llvm' -> tvm.cpu(0)
     device = tvm.device(str(target), 0)
+    # if (TARGET_NAME == "cuda"):
+    #     source_code = lib.imported_modules[0].get_source()
+    # else:
+    #     source_code = lib.get_source()
     graph_module = graph_executor.GraphModule(lib["default"](device))
-    return graph_module
+    return graph_module # , source_code
 
 def build(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
     with tvm.transform.PassContext(opt_level=3):
@@ -73,6 +77,8 @@ def main():
 
     graph_module = tune(mod=mod, params=params, input_shape=input_shape, target=target)
 
+    #type(source_code)
+    #print(source_code)
     # graph_module = build(mod=mod, params=params, input_shape=input_shape, target=target)
 
     dev = tvm.device(str(target), 0)

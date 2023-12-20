@@ -75,3 +75,157 @@ Postproc #3 [meta_schedule.RewriteLayout(0xf672d28)]: 0 failure(s)
 2023-12-19 14:15:05 [INFO] [task_scheduler.cc:131] [Task #0: fused_layout_transform] Trial #1: GFLOPs: 0.0000. Time: 199.6598 us. Best GFLOPs: 0.0000
 2023-12-19 14:15:05 [INFO] [task_scheduler.cc:131] [Task #0: fused_layout_transform] Trial #2: GFLOPs: 0.0000. Time: 138.5688 us. Best GFLOPs: 0.0000
 2023-12-19 14:15:05 [INFO] [task_scheduler.cc:131] [Task #0: fused_layout_transform] Trial #3: GFLOPs: 0.0000. Time: 130.3714 us. Best GFLOPs: 0.0000
+2023-12-20 15:07:31 [INFO] [task_scheduler.cc:160] Initializing Task #0: "fused_layout_transform"
+2023-12-20 15:07:31 [INFO] [task_scheduler.cc:35] 
+# from tvm.script import ir as I
+# from tvm.script import tir as T
+
+@I.ir_module
+class Module:
+    @T.prim_func
+    def main(p0: T.Buffer((T.int64(1), T.int64(16), T.int64(14), T.int64(14), T.int64(64)), "float32"), T_layout_trans: T.Buffer((T.int64(1), T.int64(1), T.int64(14), T.int64(14), T.int64(1024)), "float32")):
+        T.func_attr({"tir.noalias": T.bool(True)})
+        # with T.block("root"):
+        for ax0, ax1, ax2, ax3, ax4 in T.grid(T.int64(1), T.int64(1), T.int64(14), T.int64(14), T.int64(1024)):
+            with T.block("T_layout_trans"):
+                v_ax0, v_ax1, v_ax2, v_ax3, v_ax4 = T.axis.remap("SSSSS", [ax0, ax1, ax2, ax3, ax4])
+                T.reads(p0[v_ax0, v_ax1 * T.int64(16) + v_ax4 // T.int64(64), v_ax2, v_ax3, v_ax4 % T.int64(64)])
+                T.writes(T_layout_trans[v_ax0, v_ax1, v_ax2, v_ax3, v_ax4])
+                T.block_attr({"dst_layout": "NCHW1024c", "input_shape": [1, 16, 14, 14, 64], "schedule_rule": "None", "src_layout": "NCHW64c"})
+                T_layout_trans[v_ax0, v_ax1, v_ax2, v_ax3, v_ax4] = T.if_then_else(v_ax0 < T.int64(1) and v_ax1 * T.int64(16) + v_ax4 // T.int64(64) < T.int64(16) and v_ax2 < T.int64(14) and v_ax3 < T.int64(14), p0[v_ax0, v_ax1 * T.int64(16) + v_ax4 // T.int64(64), v_ax2, v_ax3, v_ax4 % T.int64(64)], T.float32(0))
+2023-12-20 15:07:31 [INFO] [task_scheduler.cc:164] Total 1 design space(s) generated
+2023-12-20 15:07:31 [INFO] [task_scheduler.cc:170] Design space #0:
+# from tvm.script import ir as I
+# from tvm.script import tir as T
+
+@I.ir_module
+class Module:
+    @T.prim_func
+    def main(p0: T.Buffer((T.int64(1), T.int64(16), T.int64(14), T.int64(14), T.int64(64)), "float32"), T_layout_trans: T.Buffer((T.int64(1), T.int64(1), T.int64(14), T.int64(14), T.int64(1024)), "float32")):
+        T.func_attr({"tir.noalias": T.bool(True)})
+        with T.block("root"):
+            T.reads()
+            T.writes()
+            T.block_attr({"meta_schedule.parallel": 256, "meta_schedule.vectorize": 64})
+            for ax0, ax1, ax2, ax3, ax4 in T.grid(T.int64(1), T.int64(1), T.int64(14), T.int64(14), T.int64(1024)):
+                with T.block("T_layout_trans"):
+                    v_ax0, v_ax1, v_ax2, v_ax3, v_ax4 = T.axis.remap("SSSSS", [ax0, ax1, ax2, ax3, ax4])
+                    T.reads(p0[v_ax0, v_ax1 * T.int64(16) + v_ax4 // T.int64(64), v_ax2, v_ax3, v_ax4 % T.int64(64)])
+                    T.writes(T_layout_trans[v_ax0, v_ax1, v_ax2, v_ax3, v_ax4])
+                    T.block_attr({"dst_layout": "NCHW1024c", "input_shape": [1, 16, 14, 14, 64], "schedule_rule": "None", "src_layout": "NCHW64c"})
+                    T_layout_trans[v_ax0, v_ax1, v_ax2, v_ax3, v_ax4] = T.if_then_else(v_ax0 < T.int64(1) and v_ax1 * T.int64(16) + v_ax4 // T.int64(64) < T.int64(16) and v_ax2 < T.int64(14) and v_ax3 < T.int64(14), p0[v_ax0, v_ax1 * T.int64(16) + v_ax4 // T.int64(64), v_ax2, v_ax3, v_ax4 % T.int64(64)], T.float32(0))
+b0 = sch.get_block(name="root", func_name="main")
+sch.annotate(block_or_loop=b0, ann_key="meta_schedule.parallel", ann_val=256)
+sch.annotate(block_or_loop=b0, ann_key="meta_schedule.vectorize", ann_val=64)
+2023-12-20 15:07:36 [INFO] [evolutionary_search.cc:713] Generating candidates......
+2023-12-20 15:07:36 [INFO] [evolutionary_search.cc:715] Picked top 3 candidate(s) from database
+2023-12-20 15:07:37 [INFO] [evolutionary_search.cc:533] Sample-Init-Population summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xbe60168)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x138649b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x13eb6318)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xf0fa4b8)]: 0 failure(s)
+2023-12-20 15:07:37 [INFO] [evolutionary_search.cc:723] Sampled 509 candidate(s)
+2023-12-20 15:07:37 [INFO] [evolutionary_search.cc:621] Evolve iter #0 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xbe60168)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x138649b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x13eb6318)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xf0fa4b8)]: 0 failure(s)
+2023-12-20 15:07:37 [INFO] [evolutionary_search.cc:621] Evolve iter #1 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xbe60168)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x138649b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x13eb6318)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xf0fa4b8)]: 0 failure(s)
+2023-12-20 15:07:37 [INFO] [evolutionary_search.cc:621] Evolve iter #2 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xbe60168)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x138649b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x13eb6318)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xf0fa4b8)]: 0 failure(s)
+2023-12-20 15:07:37 [INFO] [evolutionary_search.cc:621] Evolve iter #3 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xbe60168)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x138649b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x13eb6318)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xf0fa4b8)]: 0 failure(s)
+2023-12-20 15:07:37 [INFO] [evolutionary_search.cc:649] Scores of the best 3 candidates:
+[1 : 3]:	0.6924  0.5905  0.2812
+2023-12-20 15:07:37 [INFO] [evolutionary_search.cc:727] Got 3 candidate(s) with evolutionary search
+2023-12-20 15:07:37 [INFO] [evolutionary_search.cc:730] Sending 3 candidates(s) for measurement
+2023-12-20 15:12:14 [INFO] [task_scheduler.cc:131] [Task #0: fused_layout_transform] Trial #1: GFLOPs: 0.0000. Time: 57.7615 us. Best GFLOPs: 0.0000
+2023-12-20 15:12:14 [INFO] [task_scheduler.cc:131] [Task #0: fused_layout_transform] Trial #2: GFLOPs: 0.0000. Time: 57.6417 us. Best GFLOPs: 0.0000
+2023-12-20 15:12:14 [INFO] [task_scheduler.cc:131] [Task #0: fused_layout_transform] Trial #3: GFLOPs: 0.0000. Time: 64.9414 us. Best GFLOPs: 0.0000
+2023-12-20 15:27:19 [INFO] [task_scheduler.cc:160] Initializing Task #0: "fused_layout_transform"
+2023-12-20 15:27:19 [INFO] [task_scheduler.cc:35] 
+# from tvm.script import ir as I
+# from tvm.script import tir as T
+
+@I.ir_module
+class Module:
+    @T.prim_func
+    def main(p0: T.Buffer((T.int64(1), T.int64(16), T.int64(14), T.int64(14), T.int64(64)), "float32"), T_layout_trans: T.Buffer((T.int64(1), T.int64(1), T.int64(14), T.int64(14), T.int64(1024)), "float32")):
+        T.func_attr({"tir.noalias": T.bool(True)})
+        # with T.block("root"):
+        for ax0, ax1, ax2, ax3, ax4 in T.grid(T.int64(1), T.int64(1), T.int64(14), T.int64(14), T.int64(1024)):
+            with T.block("T_layout_trans"):
+                v_ax0, v_ax1, v_ax2, v_ax3, v_ax4 = T.axis.remap("SSSSS", [ax0, ax1, ax2, ax3, ax4])
+                T.reads(p0[v_ax0, v_ax1 * T.int64(16) + v_ax4 // T.int64(64), v_ax2, v_ax3, v_ax4 % T.int64(64)])
+                T.writes(T_layout_trans[v_ax0, v_ax1, v_ax2, v_ax3, v_ax4])
+                T.block_attr({"dst_layout": "NCHW1024c", "input_shape": [1, 16, 14, 14, 64], "schedule_rule": "None", "src_layout": "NCHW64c"})
+                T_layout_trans[v_ax0, v_ax1, v_ax2, v_ax3, v_ax4] = T.if_then_else(v_ax0 < T.int64(1) and v_ax1 * T.int64(16) + v_ax4 // T.int64(64) < T.int64(16) and v_ax2 < T.int64(14) and v_ax3 < T.int64(14), p0[v_ax0, v_ax1 * T.int64(16) + v_ax4 // T.int64(64), v_ax2, v_ax3, v_ax4 % T.int64(64)], T.float32(0))
+2023-12-20 15:27:19 [INFO] [task_scheduler.cc:164] Total 1 design space(s) generated
+2023-12-20 15:27:19 [INFO] [task_scheduler.cc:170] Design space #0:
+# from tvm.script import ir as I
+# from tvm.script import tir as T
+
+@I.ir_module
+class Module:
+    @T.prim_func
+    def main(p0: T.Buffer((T.int64(1), T.int64(16), T.int64(14), T.int64(14), T.int64(64)), "float32"), T_layout_trans: T.Buffer((T.int64(1), T.int64(1), T.int64(14), T.int64(14), T.int64(1024)), "float32")):
+        T.func_attr({"tir.noalias": T.bool(True)})
+        with T.block("root"):
+            T.reads()
+            T.writes()
+            T.block_attr({"meta_schedule.parallel": 256, "meta_schedule.vectorize": 64})
+            for ax0, ax1, ax2, ax3, ax4 in T.grid(T.int64(1), T.int64(1), T.int64(14), T.int64(14), T.int64(1024)):
+                with T.block("T_layout_trans"):
+                    v_ax0, v_ax1, v_ax2, v_ax3, v_ax4 = T.axis.remap("SSSSS", [ax0, ax1, ax2, ax3, ax4])
+                    T.reads(p0[v_ax0, v_ax1 * T.int64(16) + v_ax4 // T.int64(64), v_ax2, v_ax3, v_ax4 % T.int64(64)])
+                    T.writes(T_layout_trans[v_ax0, v_ax1, v_ax2, v_ax3, v_ax4])
+                    T.block_attr({"dst_layout": "NCHW1024c", "input_shape": [1, 16, 14, 14, 64], "schedule_rule": "None", "src_layout": "NCHW64c"})
+                    T_layout_trans[v_ax0, v_ax1, v_ax2, v_ax3, v_ax4] = T.if_then_else(v_ax0 < T.int64(1) and v_ax1 * T.int64(16) + v_ax4 // T.int64(64) < T.int64(16) and v_ax2 < T.int64(14) and v_ax3 < T.int64(14), p0[v_ax0, v_ax1 * T.int64(16) + v_ax4 // T.int64(64), v_ax2, v_ax3, v_ax4 % T.int64(64)], T.float32(0))
+b0 = sch.get_block(name="root", func_name="main")
+sch.annotate(block_or_loop=b0, ann_key="meta_schedule.parallel", ann_val=256)
+sch.annotate(block_or_loop=b0, ann_key="meta_schedule.vectorize", ann_val=64)
+2023-12-20 15:27:24 [INFO] [evolutionary_search.cc:713] Generating candidates......
+2023-12-20 15:27:24 [INFO] [evolutionary_search.cc:715] Picked top 6 candidate(s) from database
+2023-12-20 15:27:24 [INFO] [evolutionary_search.cc:533] Sample-Init-Population summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xd2ec9a8)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x12a459b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x109bc978)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xd221678)]: 0 failure(s)
+2023-12-20 15:27:24 [INFO] [evolutionary_search.cc:723] Sampled 506 candidate(s)
+2023-12-20 15:27:24 [INFO] [evolutionary_search.cc:621] Evolve iter #0 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xd2ec9a8)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x12a459b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x109bc978)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xd221678)]: 0 failure(s)
+2023-12-20 15:27:24 [INFO] [evolutionary_search.cc:621] Evolve iter #1 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xd2ec9a8)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x12a459b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x109bc978)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xd221678)]: 0 failure(s)
+2023-12-20 15:27:24 [INFO] [evolutionary_search.cc:621] Evolve iter #2 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xd2ec9a8)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x12a459b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x109bc978)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xd221678)]: 0 failure(s)
+2023-12-20 15:27:24 [INFO] [evolutionary_search.cc:621] Evolve iter #3 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0xd2ec9a8)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x12a459b8)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x109bc978)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0xd221678)]: 0 failure(s)
+2023-12-20 15:27:24 [INFO] [evolutionary_search.cc:649] Scores of the best 3 candidates:
+[1 : 3]:	0.4934  0.4756  0.3296
+2023-12-20 15:27:25 [INFO] [evolutionary_search.cc:727] Got 3 candidate(s) with evolutionary search
+2023-12-20 15:27:25 [INFO] [evolutionary_search.cc:730] Sending 3 candidates(s) for measurement
+2023-12-20 15:31:41 [INFO] [task_scheduler.cc:131] [Task #0: fused_layout_transform] Trial #1: GFLOPs: 0.0000. Time: 60.8663 us. Best GFLOPs: 0.0000
+2023-12-20 15:31:41 [INFO] [task_scheduler.cc:131] [Task #0: fused_layout_transform] Trial #2: GFLOPs: 0.0000. Time: 62.0294 us. Best GFLOPs: 0.0000
+2023-12-20 15:31:41 [INFO] [task_scheduler.cc:131] [Task #0: fused_layout_transform] Trial #3: GFLOPs: 0.0000. Time: 58.3448 us. Best GFLOPs: 0.0000
