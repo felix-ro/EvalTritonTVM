@@ -1,4 +1,4 @@
-import torch # IMPORT TORCH BEFORE TVM TO AVOID SYMBOL CLASH
+import torch  # IMPORT TORCH BEFORE TVM TO AVOID SYMBOL CLASH
 import numpy as np
 import tvm
 from tvm import relay, auto_scheduler
@@ -6,7 +6,7 @@ from tvm import relay, auto_scheduler
 from utils import getImage
 
 MODEL_NAME = "resnet50"
-TARGET_NAME = "cuda" # "llvm"
+TARGET_NAME = "cuda"  # "llvm"
 
 
 def tuneAnsor(tasks, task_weights, log_file):
@@ -31,7 +31,7 @@ def compile(log_file, mod, target, params):
             return relay.build(mod, target=target, params=params)
 
 
-def createGraphExecutor(target, lib, input_shape, dtype): 
+def createGraphExecutor(target, lib, input_shape, dtype):
     # Create graph executor
     print("Create Graph Executor...")
     dev = tvm.device(str(target), 0)

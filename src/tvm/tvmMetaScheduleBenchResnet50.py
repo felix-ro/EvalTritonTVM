@@ -1,18 +1,14 @@
-import torch # IMPORT TORCH BEFORE TVM TO AVOID SYMBOL CLASH
-
-import tempfile
-from typing import Tuple
-
+import torch  # IMPORT TORCH BEFORE TVM TO AVOID SYMBOL CLASH
 import tvm
 from tvm import relay, meta_schedule
 from tvm.target.target import Target
 from tvm.relay.backend.executor_factory import ExecutorFactoryModule
 import tvm.contrib.graph_executor as graph_executor
-
+from typing import Tuple
 from utils import getImage
 
 MODEL_NAME = "resnet50"
-TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake" # "cuda"
+TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"  # "cuda"
 WORK_DIR = "Results/TVM-MetaSchedule/"
 
 
@@ -34,9 +30,8 @@ def tune(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
         )
 
     # must exit profiler scope
-    print(f'profiler:: ')
     print(profiler.table())
-    
+
     # 'llvm' -> tvm.cpu(0)
     device = tvm.device(str(target), 0)
     # if (TARGET_NAME == "cuda"):
@@ -44,7 +39,8 @@ def tune(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
     # else:
     #     source_code = lib.get_source()
     graph_module = graph_executor.GraphModule(lib["default"](device))
-    return graph_module # , source_code
+    return graph_module  # , source_code
+
 
 def build(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
     with tvm.transform.PassContext(opt_level=3):
@@ -61,7 +57,7 @@ def build(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
 def main():
     model = torch.hub.load('pytorch/vision:v0.10.0', MODEL_NAME, pretrained=True)
     model.eval()
-    
+
     target = tvm.target.Target(TARGET_NAME)
 
     # We grab the TorchScripted model via tracing
@@ -77,15 +73,16 @@ def main():
 
     graph_module = tune(mod=mod, params=params, input_shape=input_shape, target=target)
 
-    #type(source_code)
-    #print(source_code)
+    # type(source_code)
+    # print(source_code)
     # graph_module = build(mod=mod, params=params, input_shape=input_shape, target=target)
 
     dev = tvm.device(str(target), 0)
     result = graph_module.benchmark(dev)
-    
-    print(f"results: ")
+
+    print("results: ")
     print(result)
+
 
 if __name__ == "__main__":
     main()
