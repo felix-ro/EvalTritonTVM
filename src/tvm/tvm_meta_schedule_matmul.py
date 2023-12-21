@@ -4,13 +4,15 @@ from tvm import relay, meta_schedule
 from tvm.target.target import Target
 from tvm.relay.backend.executor_factory import ExecutorFactoryModule
 import tvm.contrib.graph_executor as graph_executor
-from typing import Tuple
+import sys
 
-MODEL_NAME = "matmul"
+# MODEL_NAME = "matmul"
 TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
 WORK_DIR = "Results/TVM-MetaSchedule/matmul/"
+MAX_TRIALS = 200
 
-def tune(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
+
+def tune(mod: tvm.IRModule, params, target: Target):
     with meta_schedule.Profiler() as profiler:
         database = meta_schedule.relay_integration.tune_relay(
             mod=mod,
@@ -31,34 +33,75 @@ def tune(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
 
     device = tvm.device(str(target), 0)
     graph_module = graph_executor.GraphModule(lib["default"](device))
-    return graph_module 
+    return graph_module, profiler.table()
+
+
+def build(mod: tvm.IRModule, params, target: Target):
+    with tvm.transform.PassContext(opt_level=3):
+        lib: ExecutorFactoryModule = relay.build_module.build(
+                                            mod,
+                                            target=target,
+                                            params=params
+                                        )
+        dev = tvm.device(str(target), 0)
+        graph_module = graph_executor.GraphModule(lib["default"](dev))
+    return graph_module
+
+
+def save_results(results: any,
+                 operator_name: str,
+                 work_dir: str,
+                 max_trials: int,
+                 target_name: str):
+
+    simplified_target_name = ""
+    if "llvm" in target_name:
+        simplified_target_name = "llvm"
+    else:
+        simplified_target_name = "cuda"
+
+    file_name = f"{work_dir}results-{operator_name}-{simplified_target_name}-{max_trials}.txt"
+    f = open(file_name, "w")
+    result = f"Operator/Model name: {operator_name}\nMax Trials: {max_trials}\n\n{results}"
+    f.write(result)
+    f.close
 
 
 def main():
     target = tvm.target.Target(TARGET_NAME)
+    build_only = False
 
-    # We grab the TorchScripted model via tracing
+    if len(sys.argv) > 1 and sys.argv[1] == "build":
+        build_only = True
+
+    # extract ScriptFunction
     input_shape = [1, 3, 224, 224]
-    input_data1 = torch.randn(input_shape)
-    input_data2 = torch.randn(input_shape)
-    scripted_model = torch.jit.trace(torch.matmul, (input_data1, input_data2))
+    tensor_a = torch.randn(input_shape)
+    tensor_b = torch.randn(input_shape)
+    scripted_func = torch.jit.trace(torch.matmul, (tensor_a, tensor_b))
 
     # Creating Relay Graph
-    input_name1 = "input1"
-    input_name2 = "input2"
-    shape_list = [(input_name1, input_data1.shape), (input_name2, input_data2.shape)]
-    mod, params = relay.frontend.from_pytorch(scripted_model, shape_list)
+    tensor_a_name = "tensor_a"
+    tensor_b_name = "tensor_b"
+    shape_list = [(tensor_a_name, tensor_a.shape), (tensor_b_name, tensor_b.shape)]
+    mod, params = relay.frontend.from_pytorch(scripted_func, shape_list)
 
-    graph_module = tune(mod=mod, params=params, input_shape=input_shape, target=target)
-
-    # type(source_code)
-    # print(source_code)
-    # graph_module = build(mod=mod, params=params, input_shape=input_shape, target=target)
+    graph_module = None
+    profile_results = None
+    if build_only:
+        graph_module = build(mod=mod, params=params, target=target)
+    else:
+        graph_module, profile_results = tune(mod=mod, params=params, target=target)
 
     dev = tvm.device(str(target), 0)
     result = graph_module.benchmark(dev)
 
-    print("results: ")
+    save_results(results=result, operator_name="matmul", work_dir=WORK_DIR,
+                 max_trials=MAX_TRIALS, target_name=TARGET_NAME)
+
+    if profile_results is not None:
+        save_results(results=profile_results, operator_name="matmul-tuning-profile", work_dir=WORK_DIR,
+                     max_trials=MAX_TRIALS, target_name=TARGET_NAME)
     print(result)
 
 
