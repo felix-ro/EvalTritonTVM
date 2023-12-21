@@ -1,4 +1,5 @@
 import tvm
+from tvm.relay.backend.executor_factory import ExecutorFactoryModule
 from torchvision import transforms
 import numpy as np
 from PIL import Image
@@ -19,3 +20,30 @@ def getImage():
     )
     img = my_preprocess(img)
     return np.expand_dims(img, 0)
+
+
+def get_simplified_target_name(target_name: str):
+    if "llvm" in target_name:
+        return "llvm"
+    else:
+        return "cuda"
+
+
+def export_library(lib: ExecutorFactoryModule, model_name: str, target_name: str, work_dir: str, max_trials: int):
+    simplified_target_name = get_simplified_target_name(target_name=target_name)
+
+    # export library file (.so)
+    compiled_model = f"{model_name}-{simplified_target_name}-{max_trials}.so"
+    lib.export_library(f"{work_dir}/{compiled_model}")
+    print(f"Exported compiled library to {compiled_model}")
+
+
+def save_results(results: any, results_name: str, work_dir: str,
+                 max_trials: int, target_name: str):
+    simplified_target_name = get_simplified_target_name(target_name=target_name)
+
+    file_name = f"{work_dir}results-{results_name}-{simplified_target_name}-{max_trials}.txt"
+    f = open(file_name, "w")
+    result = f"Operator/Model name: {results_name}\nMax Trials: {max_trials}\n\n{results}"
+    f.write(result)
+    f.close

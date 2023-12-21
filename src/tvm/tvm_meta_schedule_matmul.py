@@ -1,10 +1,12 @@
-import torch  # IMPORT TORCH BEFORE TVM TO AVOID SYMBOL CLASH
+import torch
 import tvm
 from tvm import relay, meta_schedule
 from tvm.target.target import Target
 from tvm.relay.backend.executor_factory import ExecutorFactoryModule
 import tvm.contrib.graph_executor as graph_executor
 import sys
+
+from utils import export_library, save_results
 
 MODEL_NAME = "matmul"
 TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
@@ -30,7 +32,6 @@ def tune(mod: tvm.IRModule, params, target: Target):
         )
 
     print(profiler.table())
-
     device = tvm.device(str(target), 0)
     graph_module = graph_executor.GraphModule(lib["default"](device))
     return graph_module, lib, profiler.table()
@@ -46,38 +47,6 @@ def build(mod: tvm.IRModule, params, target: Target):
         dev = tvm.device(str(target), 0)
         graph_module = graph_executor.GraphModule(lib["default"](dev))
     return graph_module, lib
-
-
-def export_library(lib: ExecutorFactoryModule, model_name: str, target_name: str, work_dir: str, max_trials: int):
-    simplified_target_name = ""
-    if "llvm" in target_name:
-        simplified_target_name = "llvm"
-    else:
-        simplified_target_name = "cuda"
-
-    # export library file (.so)
-    compiled_model = f"{model_name}-{simplified_target_name}-{max_trials}.so"
-    lib.export_library(f"{work_dir}/{compiled_model}")
-    print(f"Exported compiled library to {compiled_model}")
-
-
-def save_results(results: any,
-                 operator_name: str,
-                 work_dir: str,
-                 max_trials: int,
-                 target_name: str):
-
-    simplified_target_name = ""
-    if "llvm" in target_name:
-        simplified_target_name = "llvm"
-    else:
-        simplified_target_name = "cuda"
-
-    file_name = f"{work_dir}results-{operator_name}-{simplified_target_name}-{max_trials}.txt"
-    f = open(file_name, "w")
-    result = f"Operator/Model name: {operator_name}\nMax Trials: {max_trials}\n\n{results}"
-    f.write(result)
-    f.close
 
 
 def main():
@@ -115,11 +84,11 @@ def main():
     dev = tvm.device(str(target), 0)
     result = graph_module.benchmark(dev)
 
-    save_results(results=result, operator_name="matmul", work_dir=WORK_DIR,
+    save_results(results=result, results_name="matmul", work_dir=WORK_DIR,
                  max_trials=MAX_TRIALS, target_name=TARGET_NAME)
 
     if profile_results is not None:
-        save_results(results=profile_results, operator_name="matmul-tuning-profile", work_dir=WORK_DIR,
+        save_results(results=profile_results, results_name="matmul-tuning-profile", work_dir=WORK_DIR,
                      max_trials=MAX_TRIALS, target_name=TARGET_NAME)
     print(result)
 
