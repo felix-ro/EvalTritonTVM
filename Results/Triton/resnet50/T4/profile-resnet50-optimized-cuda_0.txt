@@ -1,0 +1,69 @@
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                                   Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg    # of Calls  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                       CompiledFunction        44.68%      66.656ms        58.88%      87.836ms      87.836ms       1.981ms         1.03%     157.801ms     157.801ms             1  
+                                            aten::copy_        15.26%      22.757ms        47.78%      71.283ms     440.019us      31.098ms        16.24%      58.605ms     361.759us           162  
+                                        cudaMemcpyAsync        14.07%      20.989ms        14.07%      20.989ms     131.181us       0.000us         0.00%       0.000us       0.000us           160  
+                                  cudaDeviceSynchronize        10.33%      15.414ms        10.33%      15.414ms      15.414ms       0.000us         0.00%       0.000us       0.000us             1  
+                                         cuLaunchKernel         2.95%       4.408ms         2.95%       4.408ms      27.043us       0.000us         0.00%       0.000us       0.000us           163  
+                                aten::cudnn_convolution         2.26%       3.370ms         4.21%       6.284ms     118.566us     115.235ms        60.17%     115.235ms       2.174ms            53  
+                                       cudaLaunchKernel         1.94%       2.892ms         1.94%       2.892ms      22.246us       0.000us         0.00%       0.000us       0.000us           130  
+                                     aten::_convolution         1.86%       2.779ms         6.08%       9.063ms     171.000us     270.000us         0.14%     115.505ms       2.179ms            53  
+                                    aten::empty_strided         1.35%       2.017ms         1.35%       2.017ms       6.149us     670.000us         0.35%     670.000us       2.043us           328  
+                                      aten::convolution         1.24%       1.850ms         7.32%      10.913ms     205.906us     269.000us         0.14%     115.774ms       2.184ms            53  
+                                           aten::detach         1.01%       1.508ms         1.14%       1.707ms      10.669us       1.402ms         0.73%       2.248ms      14.050us           160  
+                                triton_poi_fused_add_32         0.42%     630.000us         2.80%       4.171ms      78.698us     265.000us         0.14%     265.000us       5.000us            53  
+triton_red_fused__native_batch_norm_legit_functional...         0.31%     467.000us         0.41%     606.000us      55.091us     923.000us         0.48%     923.000us      83.909us            11  
+triton_poi_fused__native_batch_norm_legit_functional...         0.18%     274.000us         0.24%     357.000us      32.455us       1.101ms         0.57%       1.101ms     100.091us            11  
+triton_red_fused__native_batch_norm_legit_functional...         0.17%     247.000us         0.21%     317.000us      45.286us       1.732ms         0.90%       1.732ms     247.429us             7  
+                                                 detach         0.13%     199.000us         0.13%     199.000us       1.244us     846.000us         0.44%     846.000us       5.287us           160  
+triton_red_fused__native_batch_norm_legit_functional...         0.12%     184.000us         0.16%     233.000us      46.600us     270.000us         0.14%     270.000us      54.000us             5  
+                               TorchDynamo Cache Lookup         0.12%     172.000us         0.12%     172.000us     172.000us     180.000us         0.09%     180.000us     180.000us             1  
+triton_red_fused__native_batch_norm_legit_functional...         0.11%     171.000us         0.14%     216.000us      30.857us     858.000us         0.45%     858.000us     122.571us             7  
+triton_per_fused__native_batch_norm_legit_functional...         0.10%     149.000us         0.12%     183.000us      30.500us      25.000us         0.01%      25.000us       4.167us             6  
+triton_poi_fused__native_batch_norm_legit_functional...         0.10%     144.000us         0.13%     189.000us      37.800us       2.917ms         1.52%       2.917ms     583.400us             5  
+triton_red_fused__native_batch_norm_legit_functional...         0.09%     140.000us         0.12%     178.000us      44.500us     728.000us         0.38%     728.000us     182.000us             4  
+triton_poi_fused__native_batch_norm_legit_functional...         0.09%     136.000us         0.12%     172.000us      34.400us     245.000us         0.13%     245.000us      49.000us             5  
+triton_poi_fused__native_batch_norm_legit_functional...         0.09%     131.000us         0.11%     167.000us      27.833us       2.470ms         1.29%       2.470ms     411.667us             6  
+triton_red_fused__native_batch_norm_legit_functional...         0.09%     128.000us         0.11%     160.000us      26.667us       1.250ms         0.65%       1.250ms     208.333us             6  
+triton_poi_fused__native_batch_norm_legit_functional...         0.08%     120.000us         0.11%     157.000us      22.429us       1.406ms         0.73%       1.406ms     200.857us             7  
+triton_red_fused__native_batch_norm_legit_functional...         0.07%     109.000us         0.09%     139.000us      27.800us       2.093ms         1.09%       2.093ms     418.600us             5  
+triton_red_fused__native_batch_norm_legit_functional...         0.07%     106.000us         0.09%     134.000us      33.500us       3.199ms         1.67%       3.199ms     799.750us             4  
+                                         aten::_to_copy         0.04%      66.000us        20.43%      30.470ms      30.470ms      37.000us         0.02%      30.475ms      30.475ms             1  
+                                            aten::addmm         0.04%      64.000us         0.07%     111.000us     111.000us     134.000us         0.07%     134.000us     134.000us             1  
+triton_poi_fused__native_batch_norm_legit_functional...         0.04%      58.000us         0.05%      75.000us      25.000us       3.524ms         1.84%       3.524ms       1.175ms             3  
+                                  cudaStreamSynchronize         0.04%      57.000us         0.04%      57.000us      57.000us       0.000us         0.00%       0.000us       0.000us             1  
+                                            aten::clone         0.04%      55.000us        12.78%      19.065ms      19.065ms      26.000us         0.01%      19.071ms      19.071ms             1  
+triton_poi_fused__native_batch_norm_legit_functional...         0.03%      46.000us         0.04%      62.000us      31.000us       4.808ms         2.51%       4.808ms       2.404ms             2  
+triton_red_fused__native_batch_norm_legit_functional...         0.03%      45.000us         0.04%      54.000us      54.000us     780.000us         0.41%     780.000us     780.000us             1  
+triton_red_fused__native_batch_norm_legit_functional...         0.03%      43.000us         0.03%      51.000us      51.000us     411.000us         0.21%     411.000us     411.000us             1  
+triton_red_fused__native_batch_norm_legit_functional...         0.03%      42.000us         0.04%      53.000us      53.000us     141.000us         0.07%     141.000us     141.000us             1  
+triton_per_fused__native_batch_norm_legit_functional...         0.03%      41.000us         0.04%      53.000us      53.000us     369.000us         0.19%     369.000us     369.000us             1  
+triton_per_fused__native_batch_norm_legit_functional...         0.02%      33.000us         0.03%      40.000us      40.000us       4.000us         0.00%       4.000us       4.000us             1  
+                                            aten::empty         0.02%      32.000us         0.02%      32.000us      32.000us      37.000us         0.02%      37.000us      37.000us             1  
+                          inductor::_reinterpret_tensor         0.02%      32.000us         0.02%      32.000us       0.471us     133.000us         0.07%     133.000us       1.956us            68  
+triton_poi_fused__native_batch_norm_legit_functional...         0.02%      30.000us         0.03%      38.000us      38.000us     292.000us         0.15%     292.000us     292.000us             1  
+triton_red_fused__native_batch_norm_legit_functional...         0.02%      29.000us         0.03%      38.000us      38.000us     227.000us         0.12%     227.000us     227.000us             1  
+triton_poi_fused__native_batch_norm_legit_functional...         0.02%      29.000us         0.02%      37.000us      37.000us     201.000us         0.10%     201.000us     201.000us             1  
+triton_poi_fused__native_batch_norm_legit_functional...         0.02%      28.000us         0.02%      34.000us      34.000us       2.428ms         1.27%       2.428ms       2.428ms             1  
+                                  cudaStreamIsCapturing         0.02%      27.000us         0.02%      27.000us       0.509us       0.000us         0.00%       0.000us       0.000us            53  
+triton_poi_fused__native_batch_norm_legit_functional...         0.02%      27.000us         0.02%      34.000us      34.000us       1.179ms         0.62%       1.179ms       1.179ms             1  
+triton_poi_fused__native_batch_norm_legit_functional...         0.02%      27.000us         0.03%      38.000us      38.000us     584.000us         0.30%     584.000us     584.000us             1  
+triton_poi_fused__native_batch_norm_legit_functional...         0.02%      25.000us         0.02%      32.000us      32.000us       1.676ms         0.88%       1.676ms       1.676ms             1  
+                                        cudaMemsetAsync         0.02%      24.000us         0.02%      24.000us       0.632us       0.000us         0.00%       0.000us       0.000us            38  
+triton_poi_fused__native_batch_norm_legit_functional...         0.01%      21.000us         0.02%      28.000us      28.000us     289.000us         0.15%     289.000us     289.000us             1  
+                                               aten::to         0.01%      20.000us        20.44%      30.490ms      15.245ms      25.000us         0.01%      30.500ms      15.250ms             2  
+             triton_poi_fused_max_pool2d_with_indices_3         0.01%      20.000us         0.02%      28.000us      28.000us       1.515ms         0.79%       1.515ms       1.515ms             1  
+triton_poi_fused__native_batch_norm_legit_functional...         0.01%      20.000us         0.02%      27.000us      27.000us     818.000us         0.43%     818.000us     818.000us             1  
+triton_poi_fused__native_batch_norm_legit_functional...         0.01%      18.000us         0.02%      25.000us      25.000us     404.000us         0.21%     404.000us     404.000us             1  
+                                           aten::expand         0.01%      14.000us         0.01%      17.000us      17.000us      13.000us         0.01%      20.000us      20.000us             1  
+                                       aten::contiguous         0.01%      12.000us        12.79%      19.077ms      19.077ms      11.000us         0.01%      19.082ms      19.082ms             1  
+                                       aten::empty_like         0.01%      12.000us         0.03%      44.000us      44.000us      10.000us         0.01%      47.000us      47.000us             1  
+                                        aten::expand_as         0.01%      11.000us         0.02%      28.000us      28.000us      13.000us         0.01%      33.000us      33.000us             1  
+                                  cudaStreamGetPriority         0.01%       9.000us         0.01%       9.000us       0.170us       0.000us         0.00%       0.000us       0.000us            53  
+          cudaOccupancyMaxActiveBlocksPerMultiprocessor         0.00%       5.000us         0.00%       5.000us       5.000us       0.000us         0.00%       0.000us       0.000us             1  
+                       cudaDeviceGetStreamPriorityRange         0.00%       4.000us         0.00%       4.000us       0.075us       0.000us         0.00%       0.000us       0.000us            53  
+                                       aten::as_strided         0.00%       3.000us         0.00%       3.000us       3.000us       7.000us         0.00%       7.000us       7.000us             1  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+Self CPU time total: 149.176ms
+Self CUDA time total: 191.529ms
