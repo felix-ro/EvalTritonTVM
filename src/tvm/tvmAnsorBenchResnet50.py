@@ -28,8 +28,7 @@ def compile(log_file, mod, target, params):
     print("Compile...")
     with auto_scheduler.ApplyHistoryBest(log_file):
         with tvm.transform.PassContext(opt_level=3, config={"relay.backend.use_auto_scheduler": True}):
-            return relay.build(mod, target=target, params=params)
-
+            return relay.build_module.build(mod, target=target, params=params)
 
 def createGraphExecutor(target, lib, input_shape, dtype):
     # Create graph executor
@@ -74,7 +73,13 @@ def main():
 
     # compile model with history best
     lib = compile(log_file, mod, target, params)
-    lib = compile("resnet50-NHWC-B1-cuda.json", mod, target, params)
+    # lib = compile("/homes/fjr38/EvalTritonTVM/Results/TVM-Ansor/resnet50/resnet50-NHWC-B1-cuda.json", mod, target, params)
+
+    # if (TARGET_NAME == "cuda"):
+    #     source_code = lib.imported_modules[0].get_source()
+    # else:
+    #    source_code = lib.get_source()
+    # print(source_code)
 
     # create graph executor
     module, dev = createGraphExecutor(target, lib, input_shape, dtype)

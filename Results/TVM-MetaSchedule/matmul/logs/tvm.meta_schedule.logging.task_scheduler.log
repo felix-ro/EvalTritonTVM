@@ -1,0 +1,202 @@
+2023-12-21 16:09:12 [INFO] Logging directory: Results/TVM-MetaSchedule/matmul/logs
+2023-12-21 16:10:22 [INFO] Logging directory: Results/TVM-MetaSchedule/matmul/logs
+2023-12-21 16:10:33 [INFO] LocalBuilder: max_workers = 16
+2023-12-21 16:10:34 [INFO] LocalRunner: max_workers = 1
+2023-12-21 16:10:35 [INFO] [task_scheduler.cc:159] Initializing Task #0: "fused_broadcast_to_reshape"
+2023-12-21 16:10:35 [INFO] [task_scheduler.cc:159] Initializing Task #1: "fused_nn_batch_matmul"
+2023-12-21 16:10:35 [INFO] [task_scheduler.cc:159] Initializing Task #2: "fused_reshape_squeeze"
+2023-12-21 16:10:35 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |            N/A |          N/A |                   N/A |      0 |      
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |            N/A |          N/A |                   N/A |      0 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |            N/A |          N/A |                   N/A |      0 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 0
+Total latency (us): 0
+
+2023-12-21 16:10:35 [INFO] [task_scheduler.cc:180] TaskScheduler picks Task #0: "fused_broadcast_to_reshape"
+2023-12-21 16:10:37 [INFO] [task_scheduler.cc:193] Sending 1 sample(s) to builder
+2023-12-21 16:10:38 [INFO] [task_scheduler.cc:195] Sending 1 sample(s) to runner
+2023-12-21 16:10:39 [INFO] [task_scheduler.cc:180] TaskScheduler picks Task #1: "fused_nn_batch_matmul"
+2023-12-21 16:10:55 [INFO] [task_scheduler.cc:193] Sending 64 sample(s) to builder
+2023-12-21 16:11:00 [INFO] [task_scheduler.cc:195] Sending 64 sample(s) to runner
+2023-12-21 16:11:26 [INFO] [task_scheduler.cc:180] TaskScheduler picks Task #2: "fused_reshape_squeeze"
+2023-12-21 16:11:28 [INFO] [task_scheduler.cc:193] Sending 1 sample(s) to builder
+2023-12-21 16:11:29 [INFO] [task_scheduler.cc:195] Sending 1 sample(s) to runner
+2023-12-21 16:11:30 [DEBUG] XGB iter   0: tr-p-rmse: 0.450000	tr-a-peak@32: 1.000000	tr-rmse: 0.450000	tr-rmse: 0.450000
+2023-12-21 16:11:30 [DEBUG] XGB iter  25: tr-p-rmse: 0.032305	tr-a-peak@32: 1.000000	tr-rmse: 0.032305	tr-rmse: 0.032305
+2023-12-21 16:11:30 [DEBUG] XGB iter  50: tr-p-rmse: 0.002319	tr-a-peak@32: 1.000000	tr-rmse: 0.002319	tr-rmse: 0.002319
+2023-12-21 16:11:30 [DEBUG] XGB iter  75: tr-p-rmse: 0.000166	tr-a-peak@32: 1.000000	tr-rmse: 0.000166	tr-rmse: 0.000166
+2023-12-21 16:11:30 [DEBUG] XGB iter 100: tr-p-rmse: 0.000012	tr-a-peak@32: 1.000000	tr-rmse: 0.000012	tr-rmse: 0.000012
+2023-12-21 16:11:30 [DEBUG] XGB iter 125: tr-p-rmse: 0.000001	tr-a-peak@32: 1.000000	tr-rmse: 0.000001	tr-rmse: 0.000001
+2023-12-21 16:11:30 [DEBUG] XGB iter 150: tr-p-rmse: 0.000000	tr-a-peak@32: 1.000000	tr-rmse: 0.000000	tr-rmse: 0.000000
+2023-12-21 16:11:30 [DEBUG] XGB iter 175: tr-p-rmse: 0.000000	tr-a-peak@32: 1.000000	tr-rmse: 0.000000	tr-rmse: 0.000000
+2023-12-21 16:11:30 [DEBUG] XGB stopped. Best iteration: [131] tr-p-rmse:0.00000	tr-a-peak@32:1.00000	tr-rmse:0.00000	tr-rmse:0.00000 
+2023-12-21 16:11:30 [INFO] [task_scheduler.cc:237] [Updated] Task #0: "fused_broadcast_to_reshape"
+2023-12-21 16:11:30 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |      
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |            N/A |          N/A |                   N/A |      0 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |            N/A |          N/A |                   N/A |      0 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 1
+Total latency (us): 111.409
+
+2023-12-21 16:11:31 [DEBUG] XGB iter   0: tr-p-rmse: 0.477517	tr-a-peak@32: 0.992368	tr-rmse: 0.261264	tr-rmse: 0.261264
+2023-12-21 16:11:31 [DEBUG] XGB iter  25: tr-p-rmse: 0.071927	tr-a-peak@32: 1.000000	tr-rmse: 0.256528	tr-rmse: 0.256528
+2023-12-21 16:11:31 [DEBUG] XGB iter  50: tr-p-rmse: 0.071934	tr-a-peak@32: 1.000000	tr-rmse: 0.256518	tr-rmse: 0.256518
+2023-12-21 16:11:31 [DEBUG] XGB stopped. Best iteration: [21] tr-p-rmse:0.07189	tr-a-peak@32:1.00000	tr-rmse:0.25658	tr-rmse:0.25658 
+2023-12-21 16:11:31 [INFO] [task_scheduler.cc:237] [Updated] Task #1: "fused_nn_batch_matmul"
+2023-12-21 16:11:31 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |      
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       343.1739 |     196.5083 |              196.5083 |     64 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |            N/A |          N/A |                   N/A |      0 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 65
+Total latency (us): 307.918
+
+2023-12-21 16:11:31 [INFO] [task_scheduler.cc:237] [Updated] Task #2: "fused_reshape_squeeze"
+2023-12-21 16:11:31 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |      
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       343.1739 |     196.5083 |              196.5083 |     64 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 66
+Total latency (us): 367.346
+
+2023-12-21 16:11:31 [INFO] [task_scheduler.cc:180] TaskScheduler picks Task #1: "fused_nn_batch_matmul"
+2023-12-21 16:11:47 [INFO] [task_scheduler.cc:193] Sending 64 sample(s) to builder
+2023-12-21 16:11:56 [INFO] [task_scheduler.cc:195] Sending 64 sample(s) to runner
+2023-12-21 16:12:22 [DEBUG] XGB validation: p-rmse: 0.333882	a-peak@32: 0.799954
+2023-12-21 16:12:22 [DEBUG] XGB iter   0: tr-p-rmse: 0.526712	tr-a-peak@32: 0.416406	tr-rmse: 0.213898	tr-rmse: 0.213898
+2023-12-21 16:12:22 [DEBUG] XGB iter  25: tr-p-rmse: 0.059862	tr-a-peak@32: 1.000000	tr-rmse: 0.151407	tr-rmse: 0.151407
+2023-12-21 16:12:22 [DEBUG] XGB iter  50: tr-p-rmse: 0.059816	tr-a-peak@32: 1.000000	tr-rmse: 0.151455	tr-rmse: 0.151455
+2023-12-21 16:12:22 [DEBUG] XGB iter  75: tr-p-rmse: 0.059816	tr-a-peak@32: 1.000000	tr-rmse: 0.151455	tr-rmse: 0.151455
+2023-12-21 16:12:22 [DEBUG] XGB stopped. Best iteration: [41] tr-p-rmse:0.05982	tr-a-peak@32:1.00000	tr-rmse:0.15146	tr-rmse:0.15146 
+2023-12-21 16:12:22 [INFO] [task_scheduler.cc:237] [Updated] Task #1: "fused_nn_batch_matmul"
+2023-12-21 16:12:22 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |      
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       559.3128 |     120.5704 |              120.5704 |    128 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 130
+Total latency (us): 291.408
+
+2023-12-21 16:12:22 [INFO] [task_scheduler.cc:180] TaskScheduler picks Task #0: "fused_broadcast_to_reshape"
+2023-12-21 16:12:27 [INFO] [task_scheduler.cc:193] Sending 0 sample(s) to builder
+2023-12-21 16:12:27 [INFO] [task_scheduler.cc:195] Sending 0 sample(s) to runner
+2023-12-21 16:12:27 [INFO] [task_scheduler.cc:237] [Updated] Task #0: "fused_broadcast_to_reshape"
+2023-12-21 16:12:27 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |      
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       559.3128 |     120.5704 |              120.5704 |    128 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 130
+Total latency (us): 291.408
+
+2023-12-21 16:12:27 [INFO] [task_scheduler.cc:180] TaskScheduler picks Task #1: "fused_nn_batch_matmul"
+2023-12-21 16:12:54 [INFO] [task_scheduler.cc:193] Sending 64 sample(s) to builder
+2023-12-21 16:12:58 [INFO] [task_scheduler.cc:195] Sending 64 sample(s) to runner
+2023-12-21 16:13:24 [DEBUG] XGB validation: p-rmse: 0.531325	a-peak@32: 0.969091
+2023-12-21 16:13:24 [DEBUG] XGB iter   0: tr-p-rmse: 0.472752	tr-a-peak@32: 0.940554	tr-rmse: 0.228748	tr-rmse: 0.228748
+2023-12-21 16:13:25 [DEBUG] XGB iter  25: tr-p-rmse: 0.059061	tr-a-peak@32: 1.000000	tr-rmse: 0.151986	tr-rmse: 0.151986
+2023-12-21 16:13:25 [DEBUG] XGB iter  50: tr-p-rmse: 0.058362	tr-a-peak@32: 1.000000	tr-rmse: 0.152062	tr-rmse: 0.152062
+2023-12-21 16:13:25 [DEBUG] XGB iter  75: tr-p-rmse: 0.058362	tr-a-peak@32: 1.000000	tr-rmse: 0.152062	tr-rmse: 0.152062
+2023-12-21 16:13:25 [DEBUG] XGB stopped. Best iteration: [40] tr-p-rmse:0.05836	tr-a-peak@32:1.00000	tr-rmse:0.15206	tr-rmse:0.15206 
+2023-12-21 16:13:25 [INFO] [task_scheduler.cc:237] [Updated] Task #1: "fused_nn_batch_matmul"
+2023-12-21 16:13:25 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |      
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       563.1123 |     119.7568 |              119.7568 |    192 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 194
+Total latency (us): 290.594
+
+2023-12-21 16:13:25 [INFO] [task_scheduler.cc:180] TaskScheduler picks Task #2: "fused_reshape_squeeze"
+2023-12-21 16:13:30 [INFO] [task_scheduler.cc:193] Sending 0 sample(s) to builder
+2023-12-21 16:13:30 [INFO] [task_scheduler.cc:195] Sending 0 sample(s) to runner
+2023-12-21 16:13:30 [INFO] [task_scheduler.cc:237] [Updated] Task #2: "fused_reshape_squeeze"
+2023-12-21 16:13:30 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |      
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       563.1123 |     119.7568 |              119.7568 |    192 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 194
+Total latency (us): 290.594
+
+2023-12-21 16:13:30 [INFO] [task_scheduler.cc:180] TaskScheduler picks Task #0: "fused_broadcast_to_reshape"
+2023-12-21 16:13:35 [INFO] [task_scheduler.cc:193] Sending 0 sample(s) to builder
+2023-12-21 16:13:35 [INFO] [task_scheduler.cc:195] Sending 0 sample(s) to runner
+2023-12-21 16:13:35 [INFO] [task_scheduler.cc:237] [Updated] Task #0: "fused_broadcast_to_reshape"
+2023-12-21 16:13:35 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |      
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       563.1123 |     119.7568 |              119.7568 |    192 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 194
+Total latency (us): 290.594
+
+2023-12-21 16:13:35 [INFO] [task_scheduler.cc:180] TaskScheduler picks Task #1: "fused_nn_batch_matmul"
+2023-12-21 16:14:00 [INFO] [task_scheduler.cc:193] Sending 8 sample(s) to builder
+2023-12-21 16:14:02 [INFO] [task_scheduler.cc:195] Sending 8 sample(s) to runner
+2023-12-21 16:14:06 [INFO] [task_scheduler.cc:260] Task #0 has finished. Remaining task(s): 2
+2023-12-21 16:14:06 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |    Y 
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       563.1123 |     119.7568 |              119.7568 |    192 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 194
+Total latency (us): 290.594
+
+2023-12-21 16:14:06 [DEBUG] XGB validation: p-rmse: 0.275609	a-peak@32: 0.959663
+2023-12-21 16:14:06 [INFO] [task_scheduler.cc:237] [Updated] Task #1: "fused_nn_batch_matmul"
+2023-12-21 16:14:06 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |    Y 
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       563.1123 |     119.7568 |              119.7568 |    200 |      
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 202
+Total latency (us): 290.594
+
+2023-12-21 16:14:06 [INFO] [task_scheduler.cc:260] Task #1 has finished. Remaining task(s): 1
+2023-12-21 16:14:06 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |    Y 
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       563.1123 |     119.7568 |              119.7568 |    200 |    Y 
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |      
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 202
+Total latency (us): 290.594
+
+2023-12-21 16:14:06 [INFO] [task_scheduler.cc:260] Task #2 has finished. Remaining task(s): 0
+2023-12-21 16:14:06 [INFO] [task_scheduler.cc:320] 
+ ID |                       Name |     FLOP | Weight | Speed (GFLOPS) | Latency (us) | Weighted Latency (us) | Trials | Done 
+-----------------------------------------------------------------------------------------------------------------------------
+  0 | fused_broadcast_to_reshape |        1 |      2 |         0.0000 |      55.7047 |              111.4095 |      1 |    Y 
+  1 |      fused_nn_batch_matmul | 67436544 |      1 |       563.1123 |     119.7568 |              119.7568 |    200 |    Y 
+  2 |      fused_reshape_squeeze |        1 |      1 |         0.0000 |      59.4281 |               59.4281 |      1 |    Y 
+-----------------------------------------------------------------------------------------------------------------------------
+Total trials: 202
+Total latency (us): 290.594
+

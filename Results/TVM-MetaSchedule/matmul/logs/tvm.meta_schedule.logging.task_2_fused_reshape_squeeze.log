@@ -1,0 +1,113 @@
+2023-12-21 16:10:35 [INFO] [task_scheduler.cc:160] Initializing Task #2: "fused_reshape_squeeze"
+2023-12-21 16:10:35 [INFO] [task_scheduler.cc:35] 
+# from tvm.script import ir as I
+# from tvm.script import tir as T
+
+@I.ir_module
+class Module:
+    @T.prim_func
+    def main(p0: T.Buffer((T.int64(3), T.int64(224), T.int64(224)), "float32"), T_squeeze: T.Buffer((T.int64(1), T.int64(3), T.int64(224), T.int64(224)), "float32")):
+        T.func_attr({"tir.noalias": T.bool(True)})
+        # with T.block("root"):
+        T_reshape = T.alloc_buffer((T.int64(1), T.int64(3), T.int64(224), T.int64(224)))
+        for ax0, ax1, ax2, ax3 in T.grid(T.int64(1), T.int64(3), T.int64(224), T.int64(224)):
+            with T.block("T_reshape"):
+                v_ax0, v_ax1, v_ax2, v_ax3 = T.axis.remap("SSSS", [ax0, ax1, ax2, ax3])
+                T.reads(p0[((v_ax3 // T.int64(224) + v_ax2) // T.int64(224) + v_ax1) % T.int64(3), (v_ax3 // T.int64(224) + v_ax2) % T.int64(224), v_ax3 % T.int64(224)])
+                T.writes(T_reshape[v_ax0, v_ax1, v_ax2, v_ax3])
+                T_reshape[v_ax0, v_ax1, v_ax2, v_ax3] = p0[((v_ax3 // T.int64(224) + v_ax2) // T.int64(224) + v_ax1) % T.int64(3), (v_ax3 // T.int64(224) + v_ax2) % T.int64(224), v_ax3 % T.int64(224)]
+        for ax0, ax1, ax2, ax3 in T.grid(T.int64(1), T.int64(3), T.int64(224), T.int64(224)):
+            with T.block("T_squeeze"):
+                v_ax0, v_ax1, v_ax2, v_ax3 = T.axis.remap("SSSS", [ax0, ax1, ax2, ax3])
+                T.reads(T_reshape[v_ax0, v_ax1, v_ax2, v_ax3])
+                T.writes(T_squeeze[v_ax0, v_ax1, v_ax2, v_ax3])
+                T_squeeze[v_ax0, v_ax1, v_ax2, v_ax3] = T_reshape[v_ax0, v_ax1, v_ax2, v_ax3]
+2023-12-21 16:10:35 [INFO] [task_scheduler.cc:164] Total 1 design space(s) generated
+2023-12-21 16:10:35 [INFO] [task_scheduler.cc:170] Design space #0:
+# from tvm.script import ir as I
+# from tvm.script import tir as T
+
+@I.ir_module
+class Module:
+    @T.prim_func
+    def main(p0: T.Buffer((T.int64(3), T.int64(224), T.int64(224)), "float32"), T_squeeze: T.Buffer((T.int64(1), T.int64(3), T.int64(224), T.int64(224)), "float32")):
+        T.func_attr({"tir.noalias": T.bool(True)})
+        with T.block("root"):
+            T.reads()
+            T.writes()
+            T.block_attr({"meta_schedule.parallel": 256, "meta_schedule.vectorize": 64})
+            for ax0, ax1, ax2, ax3 in T.grid(T.int64(1), T.int64(3), T.int64(224), T.int64(224)):
+                with T.block("T_squeeze"):
+                    v_ax0, v_ax1, v_ax2, v_ax3 = T.axis.remap("SSSS", [ax0, ax1, ax2, ax3])
+                    T.reads(p0[((v_ax3 // T.int64(224) + v_ax2) // T.int64(224) + v_ax1) % T.int64(3), (v_ax3 // T.int64(224) + v_ax2) % T.int64(224), v_ax3 % T.int64(224)])
+                    T.writes(T_squeeze[v_ax0, v_ax1, v_ax2, v_ax3])
+                    T_squeeze[v_ax0, v_ax1, v_ax2, v_ax3] = p0[((v_ax3 // T.int64(224) + v_ax2) // T.int64(224) + v_ax1) % T.int64(3), (v_ax3 // T.int64(224) + v_ax2) % T.int64(224), v_ax3 % T.int64(224)]
+b0 = sch.get_block(name="T_reshape", func_name="main")
+b1 = sch.get_block(name="root", func_name="main")
+sch.compute_inline(block=b0)
+sch.annotate(block_or_loop=b1, ann_key="meta_schedule.parallel", ann_val=256)
+sch.annotate(block_or_loop=b1, ann_key="meta_schedule.vectorize", ann_val=64)
+2023-12-21 16:11:26 [INFO] [evolutionary_search.cc:713] Generating candidates......
+2023-12-21 16:11:26 [INFO] [evolutionary_search.cc:715] Picked top 0 candidate(s) from database
+2023-12-21 16:11:27 [INFO] [evolutionary_search.cc:533] Sample-Init-Population summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:11:27 [INFO] [evolutionary_search.cc:723] Sampled 512 candidate(s)
+2023-12-21 16:11:27 [INFO] [evolutionary_search.cc:621] Evolve iter #0 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:11:27 [INFO] [evolutionary_search.cc:621] Evolve iter #1 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:11:28 [INFO] [evolutionary_search.cc:621] Evolve iter #2 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:11:28 [INFO] [evolutionary_search.cc:621] Evolve iter #3 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:11:28 [INFO] [evolutionary_search.cc:649] Scores of the best 1 candidates:
+[1 : 1]:	0.8820
+2023-12-21 16:11:28 [INFO] [evolutionary_search.cc:727] Got 1 candidate(s) with evolutionary search
+2023-12-21 16:11:28 [INFO] [evolutionary_search.cc:730] Sending 1 candidates(s) for measurement
+2023-12-21 16:11:31 [INFO] [task_scheduler.cc:131] [Task #2: fused_reshape_squeeze] Trial #1: GFLOPs: 0.0000. Time: 59.4281 us. Best GFLOPs: 0.0000
+2023-12-21 16:13:25 [INFO] [evolutionary_search.cc:713] Generating candidates......
+2023-12-21 16:13:25 [INFO] [evolutionary_search.cc:715] Picked top 1 candidate(s) from database
+2023-12-21 16:13:26 [INFO] [evolutionary_search.cc:533] Sample-Init-Population summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:13:26 [INFO] [evolutionary_search.cc:723] Sampled 511 candidate(s)
+2023-12-21 16:13:26 [INFO] [evolutionary_search.cc:621] Evolve iter #0 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:13:27 [INFO] [evolutionary_search.cc:621] Evolve iter #1 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:13:28 [INFO] [evolutionary_search.cc:621] Evolve iter #2 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:13:29 [INFO] [evolutionary_search.cc:621] Evolve iter #3 done. Summary:
+Postproc #0 [meta_schedule.DisallowDynamicLoop(0x9130088)]: 0 failure(s)
+Postproc #1 [meta_schedule.RewriteParallelVectorizeUnroll(0x91a7878)]: 0 failure(s)
+Postproc #2 [meta_schedule.RewriteReductionBlock(0x9341488)]: 0 failure(s)
+Postproc #3 [meta_schedule.RewriteLayout(0x915ebf8)]: 0 failure(s)
+2023-12-21 16:13:30 [INFO] [evolutionary_search.cc:649] Scores of the best 0 candidates:
+2023-12-21 16:13:30 [INFO] [evolutionary_search.cc:727] Got 0 candidate(s) with evolutionary search
+2023-12-21 16:13:30 [INFO] [evolutionary_search.cc:730] Sending 0 candidates(s) for measurement
