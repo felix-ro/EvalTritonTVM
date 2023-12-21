@@ -30,6 +30,7 @@ def compile(log_file, mod, target, params):
         with tvm.transform.PassContext(opt_level=3, config={"relay.backend.use_auto_scheduler": True}):
             return relay.build_module.build(mod, target=target, params=params)
 
+
 def createGraphExecutor(target, lib, input_shape, dtype):
     # Create graph executor
     print("Create Graph Executor...")

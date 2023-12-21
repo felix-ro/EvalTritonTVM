@@ -6,7 +6,7 @@ from tvm.relay.backend.executor_factory import ExecutorFactoryModule
 import tvm.contrib.graph_executor as graph_executor
 import sys
 
-# MODEL_NAME = "matmul"
+MODEL_NAME = "matmul"
 TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
 WORK_DIR = "Results/TVM-MetaSchedule/matmul/"
 MAX_TRIALS = 200
@@ -33,7 +33,7 @@ def tune(mod: tvm.IRModule, params, target: Target):
 
     device = tvm.device(str(target), 0)
     graph_module = graph_executor.GraphModule(lib["default"](device))
-    return graph_module, profiler.table()
+    return graph_module, lib, profiler.table()
 
 
 def build(mod: tvm.IRModule, params, target: Target):
@@ -91,7 +91,12 @@ def main():
     if build_only:
         graph_module = build(mod=mod, params=params, target=target)
     else:
-        graph_module, profile_results = tune(mod=mod, params=params, target=target)
+        graph_module, lib, profile_results = tune(mod=mod, params=params, target=target)
+
+        # export library file (.so)
+        compiled_model = f"{MODEL_NAME}.so"
+        lib.export_library(f"{WORK_DIR}/{compiled_model}")
+        print(f"Exported compiled library to {compiled_model}")
 
     dev = tvm.device(str(target), 0)
     result = graph_module.benchmark(dev)
