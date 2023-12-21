@@ -1,0 +1,6 @@
+Operator/Model name: matmul
+Max Trials: 0
+
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+   0.0431       0.0423       0.0465       0.0416       0.0018                  

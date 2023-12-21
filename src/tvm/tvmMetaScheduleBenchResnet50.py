@@ -8,7 +8,8 @@ from typing import Tuple
 from utils import getImage
 
 MODEL_NAME = "resnet50"
-TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"  # "cuda"
+# TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
+TARGET_NAME = "cuda -max_threads_per_block 1024 -max_shared_memory_per_block 49152"
 WORK_DIR = "Results/TVM-MetaSchedule/"
 
 

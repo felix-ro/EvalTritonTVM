@@ -9,7 +9,8 @@ import sys
 from utils import export_library, save_results
 
 MODEL_NAME = "matmul"
-TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
+# TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
+TARGET_NAME = "cuda -max_threads_per_block 1024 -max_shared_memory_per_block 49152"
 WORK_DIR = "Results/TVM-MetaSchedule/matmul/"
 MAX_TRIALS = 200
 
