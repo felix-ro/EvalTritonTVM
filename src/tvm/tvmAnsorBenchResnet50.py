@@ -70,11 +70,11 @@ def main():
         print(task.compute_dag)
 
     # tune the model using Ansor
-    tuneAnsor(tasks, task_weights, log_file)
+    # tuneAnsor(tasks, task_weights, log_file)
 
     # compile model with history best
     lib = compile(log_file, mod, target, params)
-    # lib = compile("resnet50-NHWC-B1-llvm.json", mod, target, params)
+    lib = compile("resnet50-NHWC-B1-cuda.json", mod, target, params)
 
     # create graph executor
     module, dev = createGraphExecutor(target, lib, input_shape, dtype)
