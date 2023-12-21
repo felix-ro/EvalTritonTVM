@@ -3,21 +3,21 @@ Max Trials: 200
 
  ID |                                        Name | Time (min) | Percentage 
 ----------------------------------------------------------------------------
-    |                                       Total |     4.3694 |   100.0000 
-  1 |                                SendToRunner |     1.3747 |    31.4630 
-  2 |                               SendToBuilder |     0.9268 |    21.2109 
-  3 |                   EvoSearch/Evolve/Mutation |     0.6723 |    15.3862 
-  4 |     EvoSearch/Evolve/PredictNormalizedScore |     0.5435 |    12.4376 
-  5 |              EvoSearch/SampleInitPopulation |     0.1800 |     4.1190 
-  6 |                       EvoSearch/Evolve/Misc |     0.1526 |     3.4925 
-  7 |             MeasureCallback/UpdateCostModel |     0.0471 |     1.0785 
-  8 |              EvoSearch/PickBestFromDatabase |     0.0354 |     0.8092 
-  9 |               MeasureCallback/AddToDatabase |     0.0137 |     0.3132 
- 10 |                       PostTuningCompilation |     0.0083 |     0.1910 
- 11 |                 EvoSearch/PickWithEpsGreedy |     0.0032 |     0.0743 
- 12 |                              TaskExtraction |     0.0016 |     0.0364 
- 13 |         MeasureCallback/RemoveBuildArtifact |     0.0012 |     0.0276 
- 14 |                              InitializeTask |     0.0002 |     0.0048 
- 15 |                           JoinRunnerFutures |     0.0002 |     0.0047 
+    |                                       Total |     4.0900 |   100.0000 
+  1 |                                SendToRunner |     1.3883 |    33.9436 
+  2 |                   EvoSearch/Evolve/Mutation |     0.7384 |    18.0536 
+  3 |     EvoSearch/Evolve/PredictNormalizedScore |     0.5191 |    12.6909 
+  4 |                               SendToBuilder |     0.5113 |    12.5006 
+  5 |              EvoSearch/SampleInitPopulation |     0.1982 |     4.8448 
+  6 |                       EvoSearch/Evolve/Misc |     0.1532 |     3.7465 
+  7 |             MeasureCallback/UpdateCostModel |     0.0538 |     1.3145 
+  8 |              EvoSearch/PickBestFromDatabase |     0.0409 |     1.0007 
+  9 |               MeasureCallback/AddToDatabase |     0.0120 |     0.2939 
+ 10 |                       PostTuningCompilation |     0.0084 |     0.2045 
+ 11 |                 EvoSearch/PickWithEpsGreedy |     0.0035 |     0.0851 
+ 12 |                              TaskExtraction |     0.0018 |     0.0433 
+ 13 |         MeasureCallback/RemoveBuildArtifact |     0.0011 |     0.0263 
+ 14 |                              InitializeTask |     0.0002 |     0.0061 
+ 15 |                           JoinRunnerFutures |     0.0002 |     0.0051 
  16 | EvoSearch/Evolve/Misc/CopyMeasuredWorkloads |     0.0000 |     0.0005 
 ----------------------------------------------------------------------------

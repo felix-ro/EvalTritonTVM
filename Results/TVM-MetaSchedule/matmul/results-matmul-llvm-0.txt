@@ -3,4 +3,4 @@ Max Trials: 0
 
 Execution time summary:
  mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
-   4.0615       4.0788       4.1342       3.9894       0.0503                  
+   3.4544       3.4553       3.5080       3.3896       0.0389                  

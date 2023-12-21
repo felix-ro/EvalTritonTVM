@@ -1,0 +1,6 @@
+Operator/Model name: resnet50
+Max Trials: 200
+
+Execution time summary:
+ mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
+  62.9663      62.2594      66.1343      58.3719       2.8468                  
