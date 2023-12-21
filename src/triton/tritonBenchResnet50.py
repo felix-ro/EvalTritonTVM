@@ -75,10 +75,10 @@ def measure_cuda(model, device, input_batch, reps, iters):
 
             # Waits for everything to finish running
             torch.cuda.synchronize()
-            sum += start.elapsed_time(end)
+            sum += start.elapsed_time(end)  # records in milliseconds
 
         sum = sum / iters
-        print(sum)
+        print(str(sum) + " ms")
         model_results.append(sum)
 
     return model_results
@@ -107,14 +107,14 @@ def time_cuda(opt_model, model, device, input_batch, reps, iters):
         "-optimized-" + str(device) + ".txt"
     f = open(file_name, "w")
     for res in opt_model_results:
-        f.write(str(res) + "\n")
+        f.write(str(res) + " ms\n")
     f.close()
 
     file_name = PATH + MODEL_NAME + "/" + "results-" + MODEL_NAME + \
         "-unoptimized-" + str(device) + ".txt"
     f = open(file_name, "w")
     for res in model_results:
-        f.write(str(res) + "\n")
+        f.write(str(res) + " ms\n")
     f.close()
 
 
@@ -136,7 +136,7 @@ def get_test_image():
                            std=[0.229, 0.224, 0.225]),
     ])
     input_tensor = preprocess(input_image)
-    input_batch = input_tensor.unsqueeze(0)
+    input_batch = input_tensor.unsqueeze(0).expand(64, -1, -1, -1)
 
     return input_batch
 
@@ -169,8 +169,10 @@ def main():
 
     # Compile the model using inductor backend
     opt_model = torch.compile(model, backend="inductor")
-    # Forces compilation bevore measuring
+    
+    # Warm up and force opt_model compilation
     opt_model(input_batch.to(device))
+    model(input_batch.to(device))
 
     if (device == "cpu"):
         # Measure CPU time using timeit
