@@ -19,7 +19,7 @@ def tune(mod: tvm.IRModule, params, target: Target):
             target=target,
             params=params,
             work_dir=WORK_DIR,
-            max_trials_global=200,
+            max_trials_global=MAX_TRIALS,
         )
         lib: ExecutorFactoryModule = meta_schedule.relay_integration.compile_relay(
             database=database,
@@ -45,7 +45,20 @@ def build(mod: tvm.IRModule, params, target: Target):
                                         )
         dev = tvm.device(str(target), 0)
         graph_module = graph_executor.GraphModule(lib["default"](dev))
-    return graph_module
+    return graph_module, lib
+
+
+def export_library(lib: ExecutorFactoryModule, model_name: str, target_name: str, work_dir: str, max_trials: int):
+    simplified_target_name = ""
+    if "llvm" in target_name:
+        simplified_target_name = "llvm"
+    else:
+        simplified_target_name = "cuda"
+
+    # export library file (.so)
+    compiled_model = f"{model_name}-{simplified_target_name}-{max_trials}.so"
+    lib.export_library(f"{work_dir}/{compiled_model}")
+    print(f"Exported compiled library to {compiled_model}")
 
 
 def save_results(results: any,
@@ -73,6 +86,8 @@ def main():
 
     if len(sys.argv) > 1 and sys.argv[1] == "build":
         build_only = True
+        global MAX_TRIALS  # sketchy
+        MAX_TRIALS = 0
 
     # extract ScriptFunction
     input_shape = [1, 3, 224, 224]
@@ -89,14 +104,13 @@ def main():
     graph_module = None
     profile_results = None
     if build_only:
-        graph_module = build(mod=mod, params=params, target=target)
+        graph_module, lib = build(mod=mod, params=params, target=target)
+        export_library(lib=lib, model_name=MODEL_NAME, target_name=TARGET_NAME,
+                       work_dir=WORK_DIR, max_trials=MAX_TRIALS)
     else:
         graph_module, lib, profile_results = tune(mod=mod, params=params, target=target)
-
-        # export library file (.so)
-        compiled_model = f"{MODEL_NAME}.so"
-        lib.export_library(f"{WORK_DIR}/{compiled_model}")
-        print(f"Exported compiled library to {compiled_model}")
+        export_library(lib=lib, model_name=MODEL_NAME, target_name=TARGET_NAME,
+                       work_dir=WORK_DIR, max_trials=MAX_TRIALS)
 
     dev = tvm.device(str(target), 0)
     result = graph_module.benchmark(dev)
