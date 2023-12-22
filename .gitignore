@@ -3,5 +3,4 @@ model/
 __pycache__/
 *logs/
 *.so
-*/database_tuning_record.json
-*/database_workload.json
+*.json
