@@ -70,17 +70,10 @@ def main():
         print(task.compute_dag)
 
     # tune the model using Ansor
-    # tuneAnsor(tasks, task_weights, log_file)
+    tuneAnsor(tasks, task_weights, log_file)
 
     # compile model with history best
     lib = compile(log_file, mod, target, params)
-    # lib = compile("/homes/fjr38/EvalTritonTVM/Results/TVM-Ansor/resnet50/resnet50-NHWC-B1-cuda.json", mod, target, params)
-
-    # if (TARGET_NAME == "cuda"):
-    #     source_code = lib.imported_modules[0].get_source()
-    # else:
-    #    source_code = lib.get_source()
-    # print(source_code)
 
     # create graph executor
     module, dev = createGraphExecutor(target, lib, input_shape, dtype)
