@@ -1,0 +1,23 @@
+Operator/Model name: resnet50-tuning-profile
+Max Trials: 5000
+
+ ID |                                        Name | Time (min) | Percentage 
+----------------------------------------------------------------------------
+    |                                       Total |   149.8661 |   100.0000 
+  1 |                   EvoSearch/Evolve/Mutation |    47.9104 |    31.9688 
+  2 |                                SendToRunner |    37.3339 |    24.9115 
+  3 |     EvoSearch/Evolve/PredictNormalizedScore |    25.4362 |    16.9726 
+  4 |                               SendToBuilder |    15.1692 |    10.1219 
+  5 |              EvoSearch/SampleInitPopulation |    11.2879 |     7.5320 
+  6 |                       EvoSearch/Evolve/Misc |     3.0798 |     2.0551 
+  7 |                       PostTuningCompilation |     1.8930 |     1.2631 
+  8 |              EvoSearch/PickBestFromDatabase |     1.6399 |     1.0942 
+  9 |                              TaskExtraction |     1.3530 |     0.9028 
+ 10 |             MeasureCallback/UpdateCostModel |     1.2628 |     0.8426 
+ 11 |               MeasureCallback/AddToDatabase |     0.2738 |     0.1827 
+ 12 |                 EvoSearch/PickWithEpsGreedy |     0.0782 |     0.0522 
+ 13 |         MeasureCallback/RemoveBuildArtifact |     0.0275 |     0.0183 
+ 14 |                              InitializeTask |     0.0058 |     0.0039 
+ 15 |                           JoinRunnerFutures |     0.0044 |     0.0029 
+ 16 | EvoSearch/Evolve/Misc/CopyMeasuredWorkloads |     0.0005 |     0.0003 
+----------------------------------------------------------------------------

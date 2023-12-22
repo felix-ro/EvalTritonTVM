@@ -2,3 +2,6 @@ model/
 .pkl_memoize_py3/
 __pycache__/
 *logs/
+*.so
+*/database_tuning_record.json
+*/database_workload.json
