@@ -18,6 +18,11 @@ import torch
 import triton
 import triton.language as tl
 
+GLOBAL_BLOCK_SIZE_M = 32
+GLOBAL_BLOCK_SIZE_N = 64
+GLOBAL_BLOCK_SIZE_K = 32
+GLOBAL_GROUP_SIZE_M = 8
+
 
 @triton.jit
 def matmul_kernel(
@@ -130,10 +135,10 @@ def matmul(a, b, activation=""):
         b.stride(0), b.stride(1),  #
         c.stride(0), c.stride(1),  #
         ACTIVATION=activation,  #
-        BLOCK_SIZE_M=32,
-        BLOCK_SIZE_N=64,
-        BLOCK_SIZE_K=32,
-        GROUP_SIZE_M=8,
+        BLOCK_SIZE_M=GLOBAL_BLOCK_SIZE_M,
+        BLOCK_SIZE_N=GLOBAL_BLOCK_SIZE_N,
+        BLOCK_SIZE_K=GLOBAL_BLOCK_SIZE_K,
+        GROUP_SIZE_M=GLOBAL_GROUP_SIZE_M,
     )
 
     return c
@@ -191,7 +196,8 @@ def benchmark(M, N, K, provider):
 def main():
     benchmark.run(show_plots=True, print_data=True)
 
-    with open("matmul.ptx", "w") as a:
+    file_name = f"matmul_{GLOBAL_BLOCK_SIZE_M}_{GLOBAL_BLOCK_SIZE_N}_{GLOBAL_BLOCK_SIZE_K}_{GLOBAL_GROUP_SIZE_M}.ptx"
+    with open(file_name, "w") as a:
         print(list(matmul_kernel.cache[0].values())[0].asm['ptx'], file=a)
 
 
