@@ -122,7 +122,6 @@ def main():
     matmul(tensor1.to(device), tensor2.to(device)).to(device)
     opt_matmul(tensor1.to(device), tensor2.to(device)).to(device)
 
-
     if device == "CPU":
         time_CPU()
     else:
@@ -133,11 +132,12 @@ def main():
                   tensor2=tensor2,
                   reps=NUM_REPS,
                   iters=NUM_ITERS)
-        
+
     profiler(matmul, opt_matmul, device, tensor1, tensor2, useCuda=True)
 
     os.environ["TORCH_COMPILE_DEBUG"] = "0"
     torch._inductor.config.debug = False
+
 
 if __name__ == "__main__":
     main()
