@@ -179,7 +179,8 @@ def perf(M, N, K, ms):
         # Line styles
         styles=[('green', '-'), ('blue', '-')],
         ylabel="TFLOPS",  # Label name for the y-axis
-        plot_name="matmul-performance",  # Name for the plot, used also as a file name for saving the plot.
+        # Name for the plot, used also as a file name for saving the plot.
+        plot_name=f"matmul-{GLOBAL_BLOCK_SIZE_M}-{GLOBAL_BLOCK_SIZE_N}-{GLOBAL_BLOCK_SIZE_K}-{GLOBAL_GROUP_SIZE_M}",
         args={},
     ))
 def benchmark(M, N, K, provider):
@@ -194,7 +195,7 @@ def benchmark(M, N, K, provider):
 
 
 def main():
-    benchmark.run(show_plots=True, print_data=True)
+    benchmark.run(show_plots=True, print_data=True, save_path=".")
 
     file_name = f"matmul_{GLOBAL_BLOCK_SIZE_M}_{GLOBAL_BLOCK_SIZE_N}_{GLOBAL_BLOCK_SIZE_K}_{GLOBAL_GROUP_SIZE_M}.ptx"
     with open(file_name, "w") as a:

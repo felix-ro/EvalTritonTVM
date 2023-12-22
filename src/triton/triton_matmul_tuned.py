@@ -227,7 +227,7 @@ def benchmark(M, N, K, provider):
 
 
 def main():
-    benchmark.run(show_plots=True, print_data=True)
+    benchmark.run(show_plots=True, print_data=True, save_path=".")
 
 
 if __name__ == "__main__":
