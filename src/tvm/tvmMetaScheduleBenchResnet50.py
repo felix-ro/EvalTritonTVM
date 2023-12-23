@@ -1,57 +1,16 @@
 import torch  # IMPORT TORCH BEFORE TVM TO AVOID SYMBOL CLASH
 import tvm
-from tvm import relay, meta_schedule
-from tvm.target.target import Target
-from tvm.relay.backend.executor_factory import ExecutorFactoryModule
-import tvm.contrib.graph_executor as graph_executor
-from typing import Tuple
-from utils import getImage
+from tvm import relay
+import sys
+
+from utils import getImage, export_library, save_results
+from meta_schedule_utils import tune, build
 
 MODEL_NAME = "resnet50"
-TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"  # "cuda"
-WORK_DIR = "Results/TVM-MetaSchedule/"
-
-
-def tune(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
-    with meta_schedule.Profiler() as profiler:
-        database = meta_schedule.relay_integration.tune_relay(
-            mod=mod,
-            target=target,
-            params=params,
-            work_dir=WORK_DIR,
-            max_trials_global=200,
-        )
-        lib: ExecutorFactoryModule = meta_schedule.relay_integration.compile_relay(
-            database=database,
-            mod=mod,
-            target=target,
-            params=params,
-            backend='graph',
-        )
-
-    # must exit profiler scope
-    print(profiler.table())
-
-    # 'llvm' -> tvm.cpu(0)
-    device = tvm.device(str(target), 0)
-    # if (TARGET_NAME == "cuda"):
-    #     source_code = lib.imported_modules[0].get_source()
-    # else:
-    #     source_code = lib.get_source()
-    graph_module = graph_executor.GraphModule(lib["default"](device))
-    return graph_module  # , source_code
-
-
-def build(mod: tvm.IRModule, params, input_shape: Tuple[int], target: Target):
-    with tvm.transform.PassContext(opt_level=3):
-        lib: ExecutorFactoryModule = relay.build_module.build(
-                                            mod,
-                                            target=target,
-                                            params=params
-                                        )
-        dev = tvm.device(str(target), 0)
-        graph_module = graph_executor.GraphModule(lib["default"](dev))
-    return graph_module
+TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
+# TARGET_NAME = "cuda -max_threads_per_block 1024 -max_shared_memory_per_block 49152"
+WORK_DIR = "Results/TVM-MetaSchedule/resnet50/"
+MAX_TRIALS = 200
 
 
 def main():
@@ -59,6 +18,13 @@ def main():
     model.eval()
 
     target = tvm.target.Target(TARGET_NAME)
+    build_only = False
+
+    # Configure build
+    if len(sys.argv) > 1 and sys.argv[1] == "build":
+        build_only = True
+        global MAX_TRIALS  # sketchy
+        MAX_TRIALS = 0
 
     # We grab the TorchScripted model via tracing
     input_shape = [1, 3, 224, 224]
@@ -71,16 +37,29 @@ def main():
     shape_list = [(input_name, img.shape)]
     mod, params = relay.frontend.from_pytorch(scripted_model, shape_list)
 
-    graph_module = tune(mod=mod, params=params, input_shape=input_shape, target=target)
+    # Build/tune the model and export library
+    graph_module = None
+    profile_results = None
+    if build_only:
+        graph_module, lib = build(mod=mod, params=params, target=target)
+        export_library(lib=lib, model_name=MODEL_NAME, target_name=TARGET_NAME,
+                       work_dir=WORK_DIR, max_trials=MAX_TRIALS)
+    else:
+        graph_module, lib, profile_results = tune(mod=mod, params=params, target=target,
+                                                  work_dir=WORK_DIR, max_trials=MAX_TRIALS)
+        export_library(lib=lib, model_name=MODEL_NAME, target_name=TARGET_NAME,
+                       work_dir=WORK_DIR, max_trials=MAX_TRIALS)
 
-    # type(source_code)
-    # print(source_code)
-    # graph_module = build(mod=mod, params=params, input_shape=input_shape, target=target)
-
+    # Benchmark the model
     dev = tvm.device(str(target), 0)
     result = graph_module.benchmark(dev)
 
-    print("results: ")
+    # Save the results
+    save_results(results=result, results_name="resnet50", work_dir=WORK_DIR,
+                 max_trials=MAX_TRIALS, target_name=TARGET_NAME)
+    if profile_results is not None:
+        save_results(results=profile_results, results_name="resnet50-tuning-profile",
+                     work_dir=WORK_DIR, max_trials=MAX_TRIALS, target_name=TARGET_NAME)
     print(result)
 
 

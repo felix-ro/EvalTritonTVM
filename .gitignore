@@ -2,3 +2,7 @@ model/
 .pkl_memoize_py3/
 __pycache__/
 .DS_Store
+*logs/
+*.so
+*.json
+*.tsv

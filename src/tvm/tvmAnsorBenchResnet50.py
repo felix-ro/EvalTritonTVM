@@ -28,7 +28,7 @@ def compile(log_file, mod, target, params):
     print("Compile...")
     with auto_scheduler.ApplyHistoryBest(log_file):
         with tvm.transform.PassContext(opt_level=3, config={"relay.backend.use_auto_scheduler": True}):
-            return relay.build(mod, target=target, params=params)
+            return relay.build_module.build(mod, target=target, params=params)
 
 
 def createGraphExecutor(target, lib, input_shape, dtype):
@@ -74,7 +74,6 @@ def main():
 
     # compile model with history best
     lib = compile(log_file, mod, target, params)
-    # lib = compile("resnet50-NHWC-B1-llvm.json", mod, target, params)
 
     # create graph executor
     module, dev = createGraphExecutor(target, lib, input_shape, dtype)
