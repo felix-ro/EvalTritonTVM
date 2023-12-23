@@ -4,33 +4,16 @@ import triton
 import triton.language as tl
 
 from utils import leaky_relu
+from tuning_search_space import get_default_tune_params, get_advanced_tune_params
 
-
-def get_default_tune_params():
-    configs = [
-        triton.Config({'BLOCK_SIZE_M': 128, 'BLOCK_SIZE_N': 256, 'BLOCK_SIZE_K': 64, 'GROUP_SIZE_M': 8}, num_stages=3,
-                      num_warps=8),
-        triton.Config({'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 256, 'BLOCK_SIZE_K': 32, 'GROUP_SIZE_M': 8}, num_stages=4,
-                      num_warps=4),
-        triton.Config({'BLOCK_SIZE_M': 128, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 32, 'GROUP_SIZE_M': 8}, num_stages=4,
-                      num_warps=4),
-        triton.Config({'BLOCK_SIZE_M': 128, 'BLOCK_SIZE_N': 64, 'BLOCK_SIZE_K': 32, 'GROUP_SIZE_M': 8}, num_stages=4,
-                      num_warps=4),
-        triton.Config({'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 32, 'GROUP_SIZE_M': 8}, num_stages=4,
-                      num_warps=4),
-        triton.Config({'BLOCK_SIZE_M': 128, 'BLOCK_SIZE_N': 32, 'BLOCK_SIZE_K': 32, 'GROUP_SIZE_M': 8}, num_stages=4,
-                      num_warps=4),
-        triton.Config({'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 32, 'BLOCK_SIZE_K': 32, 'GROUP_SIZE_M': 8}, num_stages=5,
-                      num_warps=2),
-        triton.Config({'BLOCK_SIZE_M': 32, 'BLOCK_SIZE_N': 64, 'BLOCK_SIZE_K': 32, 'GROUP_SIZE_M': 8}, num_stages=5,
-                      num_warps=2),
-    ]
-    return configs
+tuning_factor = "default"
 
 
 def _autotune_level(tuning_factor="default"):
     def decorator(func):
-        if tuning_factor == "default":
+        if tuning_factor == "advanced":
+            configs = get_advanced_tune_params()
+        else:
             configs = get_default_tune_params()
 
         func = triton.autotune(configs=configs, key=['M', 'N', 'K'],)(func)
@@ -44,7 +27,7 @@ def _autotune_level(tuning_factor="default"):
 #       meta-parameters (e.g., `BLOCK_SIZE_M`) and compilation options (e.g., `num_warps`) to try
 #   - An auto-tuning *key* whose change in values will trigger evaluation of all the
 #       provided configs
-@_autotune_level()
+@_autotune_level(tuning_factor=tuning_factor)
 @triton.jit
 def _tuned_matmul_kernel(
         # Pointers to matrices
@@ -123,11 +106,13 @@ def _tuned_matmul_kernel(
     tl.store(c_ptrs, c, mask=c_mask)
 
 
-def matmul_tuned(a, b, activation=""):
+def matmul_tuned(a, b, activation="", tuning_level="default"):
     # Check constraints.
     assert a.shape[1] == b.shape[0], "Incompatible dimensions"
     assert a.is_contiguous(), "Matrix A must be contiguous"
     assert b.is_contiguous(), "Matrix B must be contiguous"
+    global tuning_factor
+    tuning_factor = tuning_level
     M, K = a.shape
     K, N = b.shape
     # Allocates output.
