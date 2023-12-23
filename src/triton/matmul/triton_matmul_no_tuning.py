@@ -109,10 +109,6 @@ def leaky_relu(x):
     return tl.where(x >= 0, x, 0.01 * x)
 
 
-# %%
-# We can now create a convenience wrapper function that only takes two input tensors,
-# and (1) checks any shape constraint; (2) allocates the output; (3) launches the above kernel.
-
 def grid(M, N, META):
     return (triton.cdiv(M, META['BLOCK_SIZE_M']) * triton.cdiv(N, META['BLOCK_SIZE_N']), )
 
