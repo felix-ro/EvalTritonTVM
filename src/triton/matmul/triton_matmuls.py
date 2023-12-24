@@ -4,7 +4,7 @@ import triton
 import triton.language as tl
 
 from utils import leaky_relu
-from tuning_search_space import get_default_tune_params, get_advanced_tune_params, get_random_tune_params
+from tuning_search_space import get_default_tune_params, get_advanced_tune_params, get_max_tune_params
 
 
 def matmul_tuned(a, b, activation="", tuning_level="default", block_size_m=32,
@@ -65,7 +65,7 @@ def matmul_tuned(a, b, activation="", tuning_level="default", block_size_m=32,
     return c
 
 
-@triton.autotune(configs=get_random_tune_params(), key=['M', 'N', 'K'],)
+@triton.autotune(configs=get_max_tune_params(), key=['M', 'N', 'K'],)
 @triton.jit(debug=True)
 def _max_tuned_matmul_kernel(
         # Pointers to matrices
