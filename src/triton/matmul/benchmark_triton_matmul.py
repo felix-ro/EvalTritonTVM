@@ -70,7 +70,7 @@ def benchmark(M, N, K, provider):
     if provider == 'triton-tuned-advanced':
         ms, min_ms, max_ms = triton.testing.do_bench(lambda: matmul_tuned(a, b, tuning_level="advanced"),
                                                      quantiles=quantiles)
-    if provider == "triton-tuned-max": 
+    if provider == "triton-tuned-max":
         ms, min_ms, max_ms = triton.testing.do_bench(lambda: matmul_tuned(a, b, tuning_level="max"),
                                                      quantiles=quantiles)
     if provider == 'triton-untuned':
