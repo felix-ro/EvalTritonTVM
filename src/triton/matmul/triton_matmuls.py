@@ -7,13 +7,62 @@ from utils import leaky_relu
 from tuning_search_space import get_default_tune_params, get_advanced_tune_params, get_random_tune_params
 
 
-def matmul_tuned(a, b, activation="", tuning_level="default"):
+def matmul_tuned(a, b, activation="", tuning_level="default", block_size_m=32,
+                 block_size_n=64, block_size_k=32, group_size_m=8):
+    # Check constraints.
+    assert a.shape[1] == b.shape[0], "Incompatible dimensions"
+    assert a.is_contiguous(), "Matrix A must be contiguous"
+    assert b.is_contiguous(), "Matrix B must be contiguous"
+    M, K = a.shape
+    K, N = b.shape
+
+    # Allocates output.
+    c = torch.empty((M, N), device=a.device, dtype=a.dtype)
+    # 1D launch kernel where each block gets its own program.
+    grid = lambda META: (triton.cdiv(M, META['BLOCK_SIZE_M']) * triton.cdiv(N, META['BLOCK_SIZE_N']), )  # noqa: E731
+
     if tuning_level == "advanced":
-        matmul_tuned_advanced(a, b, activation=activation)
+        _advanced_tuned_matmul_kernel[grid](
+            a, b, c,  #
+            M, N, K,  #
+            a.stride(0), a.stride(1),  #
+            b.stride(0), b.stride(1),  #
+            c.stride(0), c.stride(1),  #
+            ACTIVATION=activation  #
+        )
     elif tuning_level == "max":
-        matmul_tuned_max(a, b, activation=activation)
+        _max_tuned_matmul_kernel[grid](
+            a, b, c,  #
+            M, N, K,  #
+            a.stride(0), a.stride(1),  #
+            b.stride(0), b.stride(1),  #
+            c.stride(0), c.stride(1),  #
+            ACTIVATION=activation  #
+        )
+    elif tuning_level == "none":
+        _untuned_matmul_kernel[grid](
+            a, b, c,  #
+            M, N, K,  #
+            a.stride(0), a.stride(1),  #
+            b.stride(0), b.stride(1),  #
+            c.stride(0), c.stride(1),  #
+            ACTIVATION=activation,  #
+            BLOCK_SIZE_M=block_size_m,
+            BLOCK_SIZE_N=block_size_n,
+            BLOCK_SIZE_K=block_size_k,
+            GROUP_SIZE_M=group_size_m,
+        )
     else:
-        matmul_tuned_default(a, b, activation=activation)
+        _default_tuned_matmul_kernel[grid](
+            a, b, c,  #
+            M, N, K,  #
+            a.stride(0), a.stride(1),  #
+            b.stride(0), b.stride(1),  #
+            c.stride(0), c.stride(1),  #
+            ACTIVATION=activation  #
+        )
+
+    return c
 
 
 @triton.autotune(configs=get_random_tune_params(), key=['M', 'N', 'K'],)
@@ -95,30 +144,6 @@ def _max_tuned_matmul_kernel(
     tl.store(c_ptrs, c, mask=c_mask)
 
 
-def matmul_tuned_max(a, b, activation=""):
-    # Check constraints.
-    assert a.shape[1] == b.shape[0], "Incompatible dimensions"
-    assert a.is_contiguous(), "Matrix A must be contiguous"
-    assert b.is_contiguous(), "Matrix B must be contiguous"
-    M, K = a.shape
-    K, N = b.shape
-
-    # Allocates output.
-    c = torch.empty((M, N), device=a.device, dtype=a.dtype)
-    # 1D launch kernel where each block gets its own program.
-    grid = lambda META: (triton.cdiv(M, META['BLOCK_SIZE_M']) * triton.cdiv(N, META['BLOCK_SIZE_N']), )  # noqa: E731
-    _max_tuned_matmul_kernel[grid](
-        a, b, c,  #
-        M, N, K,  #
-        a.stride(0), a.stride(1),  #
-        b.stride(0), b.stride(1),  #
-        c.stride(0), c.stride(1),  #
-        ACTIVATION=activation  #
-    )
-
-    return c
-
-
 @triton.autotune(configs=get_advanced_tune_params(), key=['M', 'N', 'K'],)
 @triton.jit(debug=True)
 def _advanced_tuned_matmul_kernel(
@@ -196,30 +221,6 @@ def _advanced_tuned_matmul_kernel(
     c_ptrs = c_ptr + stride_cm * offs_cm[:, None] + stride_cn * offs_cn[None, :]
     c_mask = (offs_cm[:, None] < M) & (offs_cn[None, :] < N)
     tl.store(c_ptrs, c, mask=c_mask)
-
-
-def matmul_tuned_advanced(a, b, activation=""):
-    # Check constraints.
-    assert a.shape[1] == b.shape[0], "Incompatible dimensions"
-    assert a.is_contiguous(), "Matrix A must be contiguous"
-    assert b.is_contiguous(), "Matrix B must be contiguous"
-    M, K = a.shape
-    K, N = b.shape
-
-    # Allocates output.
-    c = torch.empty((M, N), device=a.device, dtype=a.dtype)
-    # 1D launch kernel where each block gets its own program.
-    grid = lambda META: (triton.cdiv(M, META['BLOCK_SIZE_M']) * triton.cdiv(N, META['BLOCK_SIZE_N']), )  # noqa: E731
-    _advanced_tuned_matmul_kernel[grid](
-        a, b, c,  #
-        M, N, K,  #
-        a.stride(0), a.stride(1),  #
-        b.stride(0), b.stride(1),  #
-        c.stride(0), c.stride(1),  #
-        ACTIVATION=activation  #
-    )
-
-    return c
 
 
 def wrapper():
@@ -310,30 +311,6 @@ def _default_tuned_matmul_kernel(
     tl.store(c_ptrs, c, mask=c_mask)
 
 
-def matmul_tuned_default(a, b, activation=""):
-    # Check constraints.
-    assert a.shape[1] == b.shape[0], "Incompatible dimensions"
-    assert a.is_contiguous(), "Matrix A must be contiguous"
-    assert b.is_contiguous(), "Matrix B must be contiguous"
-    M, K = a.shape
-    K, N = b.shape
-
-    # Allocates output.
-    c = torch.empty((M, N), device=a.device, dtype=a.dtype)
-    # 1D launch kernel where each block gets its own program.
-    grid = lambda META: (triton.cdiv(M, META['BLOCK_SIZE_M']) * triton.cdiv(N, META['BLOCK_SIZE_N']), )  # noqa: E731
-    _default_tuned_matmul_kernel[grid](
-        a, b, c,  #
-        M, N, K,  #
-        a.stride(0), a.stride(1),  #
-        b.stride(0), b.stride(1),  #
-        c.stride(0), c.stride(1),  #
-        ACTIVATION=activation  #
-    )
-
-    return c
-
-
 @triton.jit(debug=True)
 def _untuned_matmul_kernel(
         # Pointers to matrices
@@ -410,30 +387,3 @@ def _untuned_matmul_kernel(
     c_ptrs = c_ptr + stride_cm * offs_cm[:, None] + stride_cn * offs_cn[None, :]
     c_mask = (offs_cm[:, None] < M) & (offs_cn[None, :] < N)
     tl.store(c_ptrs, c, mask=c_mask)
-
-
-def matmul_untuned(a, b, activation="", block_size_m=32, block_size_n=64, block_size_k=32, group_size_m=8):
-    # Check constraints.
-    assert a.shape[1] == b.shape[0], "Incompatible dimensions"
-    assert a.is_contiguous(), "Matrix A must be contiguous"
-    assert b.is_contiguous(), "Matrix B must be contiguous"
-    M, K = a.shape
-    K, N = b.shape
-    # Allocates output.
-    c = torch.empty((M, N), device=a.device, dtype=a.dtype)
-    # 1D launch kernel where each block gets its own program.
-    grid = lambda META: (triton.cdiv(M, META['BLOCK_SIZE_M']) * triton.cdiv(N, META['BLOCK_SIZE_N']), )  # noqa: E731
-    _untuned_matmul_kernel[grid](
-        a, b, c,  #
-        M, N, K,  #
-        a.stride(0), a.stride(1),  #
-        b.stride(0), b.stride(1),  #
-        c.stride(0), c.stride(1),  #
-        ACTIVATION=activation,  #
-        BLOCK_SIZE_M=block_size_m,
-        BLOCK_SIZE_N=block_size_n,
-        BLOCK_SIZE_K=block_size_k,
-        GROUP_SIZE_M=group_size_m,
-    )
-
-    return c

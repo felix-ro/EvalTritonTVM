@@ -1,5 +1,3 @@
-# HEAVILY BASED ON https://github.com/openai/triton/blob/main/python/tutorials/03-matrix-multiplication.py
-
 """
 Matrix Multiplication
 =====================
@@ -16,7 +14,7 @@ https://github.com/openai/triton/blob/main/python/tutorials/03-matrix-multiplica
 import torch
 
 import triton
-from triton_matmuls import matmul_untuned, matmul_tuned
+from triton_matmuls import matmul_tuned
 
 
 def test():
@@ -28,7 +26,7 @@ def test():
     torch.manual_seed(0)
     a = torch.randn((512, 512), device='cuda', dtype=torch.float16)
     b = torch.randn((512, 512), device='cuda', dtype=torch.float16)
-    triton_output = matmul_untuned(a, b)
+    triton_output = matmul_tuned(a, b, tuning_level="none")
     torch_output = torch.matmul(a, b)
     print(f"triton_output={triton_output}")
     print(f"torch_output={torch_output}")
@@ -74,7 +72,8 @@ def benchmark(M, N, K, provider):
         ms, min_ms, max_ms = triton.testing.do_bench(lambda: matmul_tuned(a, b, tuning_level="max"),
                                                      quantiles=quantiles)
     if provider == 'triton-untuned':
-        ms, min_ms, max_ms = triton.testing.do_bench(lambda: matmul_untuned(a, b), quantiles=quantiles)
+        ms, min_ms, max_ms = triton.testing.do_bench(lambda: matmul_tuned(a, b, tuning_level="none"),
+                                                     quantiles=quantiles)
     return perf(M, N, K, ms), perf(M, N, K, max_ms), perf(M, N, K, min_ms)
 
 
