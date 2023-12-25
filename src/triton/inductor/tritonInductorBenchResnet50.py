@@ -146,11 +146,6 @@ def get_test_image():
 
 
 def main():
-    is_colab = True
-    if is_colab:
-        global PATH
-        PATH = "drive/MyDrive/" + PATH
-
     # Settings to generate output files for the generated code
     # If this does not generate output code files run
     # "export TORCH_COMPILE_DEBUG=1" in the terminal
@@ -174,9 +169,10 @@ def main():
 
     # Compile the model using inductor backend
     opt_model = torch.compile(model, backend="inductor", mode="max-autotune")
+    opt_model.to(device)
     
     # Warm up and force opt_model compilation
-    # opt_model(input_batch.to(device))
+    opt_model(input_batch.to(device))
     model(input_batch.to(device))
 
     if (device == "cpu"):
