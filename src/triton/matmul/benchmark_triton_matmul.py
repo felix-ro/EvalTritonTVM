@@ -79,7 +79,7 @@ def benchmark(M, N, K, provider):
 
 def main():
     test()
-    benchmark.run(show_plots=True, print_data=True, save_path=".")
+    benchmark.run(show_plots=False, print_data=True, save_path=".")
 
 
 if __name__ == "__main__":
