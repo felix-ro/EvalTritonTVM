@@ -118,6 +118,10 @@ def time_cuda(opt_model, model, device, input_batch, reps, iters):
     f.close()
 
 
+def get_aritficial_data(shape, dtype):
+    return torch.rand(shape, dtype=dtype)
+
+
 def get_test_image():
     url, file_name = (
         "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
@@ -136,15 +140,15 @@ def get_test_image():
                            std=[0.229, 0.224, 0.225]),
     ])
     input_tensor = preprocess(input_image)
-    input_batch = input_tensor.unsqueeze(0).expand(64, -1, -1, -1)
+    input_batch = input_tensor.unsqueeze(0)
 
     return input_batch
 
 
 def main():
-    global PATH
     is_colab = True
     if is_colab:
+        global PATH
         PATH = "drive/MyDrive/" + PATH
 
     # Settings to generate output files for the generated code
@@ -165,13 +169,14 @@ def main():
                            pretrained=True)
     model.to(device)
 
-    input_batch = get_test_image()
+    # input_batch = get_test_image()
+    input_batch = get_aritficial_data(shape=(1, 3, 224, 224), dtype=torch.float32)
 
     # Compile the model using inductor backend
-    opt_model = torch.compile(model, backend="inductor")
+    opt_model = torch.compile(model, backend="inductor", mode="max-autotune")
     
     # Warm up and force opt_model compilation
-    opt_model(input_batch.to(device))
+    # opt_model(input_batch.to(device))
     model(input_batch.to(device))
 
     if (device == "cpu"):
