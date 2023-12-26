@@ -1,4 +1,4 @@
-M,cuBLAS,Triton Default Tuning,Triton Advanced Tuning,Triton Max Tuning,Triton No Tuning
+M,cuBLAS,Triton Default,Triton Advanced,Triton Max,Triton (No Tuning)
 256.0,4.096000,3.640889,4.096000,4.096000,3.640889
 384.0,11.059200,12.288000,12.288000,12.288000,10.053818
 512.0,26.214401,23.831273,26.214401,23.831273,18.724571
