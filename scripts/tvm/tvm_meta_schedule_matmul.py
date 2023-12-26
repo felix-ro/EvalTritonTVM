@@ -10,7 +10,7 @@ MODEL_NAME = "matmul"
 # TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
 TARGET_NAME = "nvidia/tesla-p100"
 WORK_DIR = "Results/TVM-MetaSchedule/matmul/"
-MAX_TRIALS = 200
+MAX_TRIALS = 2000
 
 
 def main():
@@ -24,8 +24,8 @@ def main():
         MAX_TRIALS = 0
 
     # extract ScriptFunction
-    tensor_a = torch.randn((512, 512), device="cuda", dtype=torch.float16)
-    tensor_b = torch.randn((512, 512), device="cuda", dtype=torch.float16)
+    tensor_a = torch.randn((2048, 2048), device="cuda", dtype=torch.float16)
+    tensor_b = torch.randn((2048, 2048), device="cuda", dtype=torch.float16)
     scripted_func = torch.jit.trace(torch.matmul, (tensor_a, tensor_b))
 
     # Creating Relay Graph
