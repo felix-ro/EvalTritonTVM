@@ -1,0 +1,23 @@
+Operator/Model name: matmul-tuning-profile
+Max Trials: 100
+
+ ID |                                        Name | Time (min) | Percentage 
+----------------------------------------------------------------------------
+    |                                       Total |     7.9803 |   100.0000 
+  1 |                   EvoSearch/Evolve/Mutation |     3.3576 |    42.0742 
+  2 |                                SendToRunner |     2.3870 |    29.9116 
+  3 |              EvoSearch/SampleInitPopulation |     0.9631 |    12.0689 
+  4 |                               SendToBuilder |     0.3587 |     4.4954 
+  5 |                       EvoSearch/Evolve/Misc |     0.2952 |     3.6986 
+  6 |     EvoSearch/Evolve/PredictNormalizedScore |     0.0694 |     0.8701 
+  7 |             MeasureCallback/UpdateCostModel |     0.0659 |     0.8257 
+  8 |                       PostTuningCompilation |     0.0574 |     0.7192 
+  9 |              EvoSearch/PickBestFromDatabase |     0.0477 |     0.5978 
+ 10 |               MeasureCallback/AddToDatabase |     0.0083 |     0.1040 
+ 11 |                 EvoSearch/PickWithEpsGreedy |     0.0059 |     0.0734 
+ 12 |                              TaskExtraction |     0.0039 |     0.0493 
+ 13 |                              InitializeTask |     0.0002 |     0.0031 
+ 14 |         MeasureCallback/RemoveBuildArtifact |     0.0001 |     0.0015 
+ 15 |                           JoinRunnerFutures |     0.0001 |     0.0012 
+ 16 | EvoSearch/Evolve/Misc/CopyMeasuredWorkloads |     0.0000 |     0.0000 
+----------------------------------------------------------------------------
