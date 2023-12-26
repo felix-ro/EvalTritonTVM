@@ -7,8 +7,8 @@ from utils import export_library, save_results
 from meta_schedule_utils import tune, build
 
 MODEL_NAME = "matmul"
-TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
-# TARGET_NAME = "cuda -max_threads_per_block 1024 -max_shared_memory_per_block 49152"
+# TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
+TARGET_NAME = "nvidia/tesla-p100"
 WORK_DIR = "Results/TVM-MetaSchedule/matmul/"
 MAX_TRIALS = 200
 
@@ -24,9 +24,8 @@ def main():
         MAX_TRIALS = 0
 
     # extract ScriptFunction
-    input_shape = [1, 3, 224, 224]
-    tensor_a = torch.randn(input_shape)
-    tensor_b = torch.randn(input_shape)
+    tensor_a = torch.randn((512, 512), device="cuda", dtype=torch.float16)
+    tensor_b = torch.randn((512, 512), device="cuda", dtype=torch.float16)
     scripted_func = torch.jit.trace(torch.matmul, (tensor_a, tensor_b))
 
     # Creating Relay Graph
