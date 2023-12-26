@@ -6,7 +6,12 @@ from tvm import relay, auto_scheduler
 from utils import getImage
 
 MODEL_NAME = "resnet50"
-TARGET_NAME = "cuda"  # "llvm"
+# #################### CONFIGURE BEFORE RUNNING #####################
+# TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
+# TARGET_NAME = "nvidia/nvidia-a100"
+TARGET_NAME = "nvidia/tesla-p100"
+MAX_TRIALS = 2000
+# ###################################################################
 
 
 def tuneAnsor(tasks, task_weights, log_file):
@@ -15,7 +20,7 @@ def tuneAnsor(tasks, task_weights, log_file):
 
     tuner = auto_scheduler.TaskScheduler(tasks, task_weights)
     tune_option = auto_scheduler.TuningOptions(
-        num_measure_trials=200,  # change this to 20000 to achieve the best performance
+        num_measure_trials=MAX_TRIALS,
         runner=measure_ctx.runner,
         measure_callbacks=[auto_scheduler.RecordToFile(log_file)],
     )

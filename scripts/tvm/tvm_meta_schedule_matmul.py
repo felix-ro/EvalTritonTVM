@@ -7,10 +7,13 @@ from utils import export_library, save_results
 from meta_schedule_utils import tune, build
 
 MODEL_NAME = "matmul"
+
+# #################### CONFIGURE BEFORE RUNNING #####################
 # TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
 TARGET_NAME = "nvidia/tesla-p100"
 WORK_DIR = "Results/TVM-MetaSchedule/matmul/"
 MAX_TRIALS = 2000
+# ###################################################################
 
 
 def main():

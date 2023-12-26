@@ -7,11 +7,14 @@ from utils import getImage, export_library, save_results
 from meta_schedule_utils import tune, build
 
 MODEL_NAME = "resnet50"
+
+# #################### CONFIGURE BEFORE RUNNING #####################
 # TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
 # TARGET_NAME = "nvidia/nvidia-a100"
 TARGET_NAME = "nvidia/tesla-p100"
 WORK_DIR = "Results/TVM-MetaSchedule/resnet50/"
 MAX_TRIALS = 2000
+# ###################################################################
 
 
 def main():
