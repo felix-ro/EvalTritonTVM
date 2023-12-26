@@ -5,9 +5,10 @@ import numpy as np
 
 
 # #################### CONFIGURE BEFORE RUNNING #####################
-TARGET_NAME = "nvidia/tesla-p100"
-WORK_DIR = "/home/fjr38/projects/EvalTritonTVM/Results/TVM-MetaSchedule/matmul/P100/2000-trials/"
-COMPILED_LIB_NAME = "matmul-cuda-2000.so"
+# TARGET_NAME = "nvidia/tesla-p100"
+TARGET_NAME = "nvidia/nvidia-a100"
+WORK_DIR = "/home/fjr38/rds/hpc-work/EvalTritonTVM/Results/TVM-MetaSchedule/matmul/A100/2250-trials/"
+COMPILED_LIB_NAME = "matmul-cuda-2250.so"
 M = 2048
 # ###################################################################
 
