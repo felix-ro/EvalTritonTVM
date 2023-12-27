@@ -81,6 +81,10 @@ def main():
     test()
     benchmark.run(show_plots=False, print_data=True, save_path=".")
 
+    # file_name = f"matmul.ptx"
+    # with open(file_name, "w") as a:
+    #     print(list(matmul_kernel.cache[0].values())[0].asm['ptx'], file=a)
+
 
 if __name__ == "__main__":
     main()
