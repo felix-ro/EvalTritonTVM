@@ -1,0 +1,44 @@
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                                   Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg    # of Calls  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                 aten::cudnn_batch_norm        26.50%       3.962ms        37.50%       5.606ms     105.774us       3.557ms        21.37%       6.042ms     114.000us            53  
+                                aten::cudnn_convolution        11.77%       1.760ms        16.07%       2.402ms      45.321us       3.672ms        22.06%       3.672ms      69.283us            53  
+                                       cudaLaunchKernel         9.52%       1.424ms         9.52%       1.424ms       5.435us       0.000us         0.00%       0.000us       0.000us           262  
+                                            aten::relu_         7.16%       1.071ms        10.82%       1.617ms      33.000us       1.002ms         6.02%       1.815ms      37.041us            49  
+                                            aten::empty         5.30%     793.000us         5.30%     793.000us       2.992us       1.750ms        10.51%       1.750ms       6.604us           265  
+                                      aten::convolution         4.93%     737.000us        25.62%       3.830ms      72.264us     606.000us         3.64%       4.794ms      90.453us            53  
+                                     aten::_convolution         4.62%     691.000us        20.69%       3.093ms      58.358us     516.000us         3.10%       4.188ms      79.019us            53  
+                                             aten::add_         4.36%     652.000us         6.69%       1.000ms      14.493us       1.274ms         7.65%       1.274ms      18.464us            69  
+                           aten::_batch_norm_impl_index         4.12%     616.000us        41.62%       6.222ms     117.396us     500.000us         3.00%       6.542ms     123.434us            53  
+                                        cudaMemcpyAsync         3.96%     592.000us         3.96%     592.000us     592.000us       0.000us         0.00%       0.000us       0.000us             1  
+                                           aten::conv2d         3.24%     484.000us        28.85%       4.314ms      81.396us     428.000us         2.57%       5.222ms      98.528us            53  
+                                       aten::empty_like         3.18%     475.000us         5.02%     751.000us      14.170us     483.000us         2.90%     947.000us      17.868us            53  
+                                       aten::batch_norm         3.10%     464.000us        44.72%       6.686ms     126.151us     450.000us         2.70%       6.992ms     131.925us            53  
+                                  cudaStreamSynchronize         2.69%     402.000us         2.69%     402.000us     402.000us       0.000us         0.00%       0.000us       0.000us             1  
+                                       aten::clamp_min_         2.05%     306.000us         3.65%     546.000us      11.143us     813.000us         4.88%     813.000us      16.592us            49  
+                                    cudaLaunchKernelExC         0.45%      67.000us         0.45%      67.000us       4.786us       0.000us         0.00%       0.000us       0.000us            14  
+                                             aten::view         0.41%      62.000us         0.41%      62.000us       1.148us     262.000us         1.57%     262.000us       4.852us            54  
+                                            aten::addmm         0.37%      56.000us         0.46%      69.000us      69.000us      76.000us         0.46%      76.000us      76.000us             1  
+                                         aten::_to_copy         0.26%      39.000us         7.18%       1.074ms       1.074ms      33.000us         0.20%       1.076ms       1.076ms             1  
+cudaOccupancyMaxActiveBlocksPerMultiprocessorWithFla...         0.25%      38.000us         0.25%      38.000us       1.086us       0.000us         0.00%       0.000us       0.000us            35  
+                                             aten::mean         0.17%      25.000us         0.21%      32.000us      32.000us      37.000us         0.22%      37.000us      37.000us             1  
+                                           aten::linear         0.17%      25.000us         0.79%     118.000us     118.000us      18.000us         0.11%     122.000us     122.000us             1  
+                                  cudaDeviceSynchronize         0.16%      24.000us         0.16%      24.000us      24.000us       0.000us         0.00%       0.000us       0.000us             1  
+                                   cudaFuncSetAttribute         0.15%      23.000us         0.15%      23.000us       0.232us       0.000us         0.00%       0.000us       0.000us            99  
+                                            aten::copy_         0.14%      21.000us         6.79%       1.015ms       1.015ms       1.019ms         6.12%       1.019ms       1.019ms             1  
+                                        cudaMemsetAsync         0.14%      21.000us         0.14%      21.000us       7.000us       0.000us         0.00%       0.000us       0.000us             3  
+                                    aten::empty_strided         0.13%      20.000us         0.13%      20.000us      20.000us      24.000us         0.14%      24.000us      24.000us             1  
+                          aten::max_pool2d_with_indices         0.13%      20.000us         0.18%      27.000us      27.000us      48.000us         0.29%      48.000us      48.000us             1  
+                                               aten::to         0.11%      17.000us         7.30%       1.091ms       1.091ms      20.000us         0.12%       1.096ms       1.096ms             1  
+                              aten::adaptive_avg_pool2d         0.11%      16.000us         0.32%      48.000us      48.000us      14.000us         0.08%      51.000us      51.000us             1  
+                                                aten::t         0.08%      12.000us         0.16%      24.000us      24.000us      12.000us         0.07%      28.000us      28.000us             1  
+                                       aten::max_pool2d         0.07%      10.000us         0.25%      37.000us      37.000us       8.000us         0.05%      56.000us      56.000us             1  
+                                          aten::flatten         0.07%      10.000us         0.11%      16.000us      16.000us      10.000us         0.06%      20.000us      20.000us             1  
+                                        aten::transpose         0.07%      10.000us         0.08%      12.000us      12.000us      10.000us         0.06%      16.000us      16.000us             1  
+                                  cudaStreamIsCapturing         0.01%       2.000us         0.01%       2.000us       0.019us       0.000us         0.00%       0.000us       0.000us           106  
+                                       aten::as_strided         0.01%       2.000us         0.01%       2.000us       2.000us       6.000us         0.04%       6.000us       6.000us             1  
+                                  cudaStreamGetPriority         0.01%       1.000us         0.01%       1.000us       0.009us       0.000us         0.00%       0.000us       0.000us           106  
+                       cudaDeviceGetStreamPriorityRange         0.01%       1.000us         0.01%       1.000us       0.009us       0.000us         0.00%       0.000us       0.000us           106  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+Self CPU time total: 14.951ms
+Self CUDA time total: 16.648ms
