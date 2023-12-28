@@ -1,3 +1,0 @@
-Execution time summary:
- mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)  
-  103.6734     102.9376     105.5051     102.5775      1.3035                  
