@@ -170,7 +170,7 @@ def main():
     # Compile the model using inductor backend
     opt_model = torch.compile(model, backend="inductor", mode="max-autotune")
     opt_model.to(device)
-    
+
     # Warm up and force opt_model compilation
     opt_model(input_batch.to(device))
     model(input_batch.to(device))

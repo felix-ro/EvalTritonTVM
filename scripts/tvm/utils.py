@@ -33,9 +33,9 @@ def export_library(lib: ExecutorFactoryModule, model_name: str, target_name: str
     simplified_target_name = get_simplified_target_name(target_name=target_name)
 
     # export library file (.so)
-    compiled_model = f"{model_name}-{simplified_target_name}-{max_trials}.so"
-    lib.export_library(f"{work_dir}/{compiled_model}")
-    print(f"Exported compiled library to {compiled_model}")
+    compiled_model_name = f"{model_name}-{simplified_target_name}-{max_trials}.so"
+    lib.export_library(f"{work_dir}/{compiled_model_name}")
+    print(f"Exported compiled library to {compiled_model_name}.so")
 
 
 def save_results(results: any, results_name: str, work_dir: str,

@@ -13,12 +13,13 @@ MODEL_NAME = "resnet50"
 # TARGET_NAME = "nvidia/nvidia-a100"
 TARGET_NAME = "nvidia/tesla-p100"
 WORK_DIR = "Results/TVM-MetaSchedule/resnet50/"
-MAX_TRIALS = 2000
+MAX_TRIALS = 100
 # ###################################################################
 
 
 def main():
     model = torch.hub.load('pytorch/vision:v0.10.0', MODEL_NAME, pretrained=True)
+    model.to("cuda")
     model.eval()
 
     target = tvm.target.Target(TARGET_NAME)
@@ -32,7 +33,7 @@ def main():
 
     # We grab the TorchScripted model via tracing
     input_shape = [1, 3, 224, 224]
-    input_data = torch.randn(input_shape)
+    input_data = torch.randn(input_shape, device="cuda")
     scripted_model = torch.jit.trace(model, input_data).eval()
 
     # Creating Relay Graph
