@@ -34,7 +34,7 @@ def export_library(lib: ExecutorFactoryModule, model_name: str, target_name: str
 
     # export library file (.so)
     compiled_model_name = f"{model_name}-{simplified_target_name}-{max_trials}.so"
-    lib.export_library(f"{work_dir}/{compiled_model_name}")
+    lib.export_library(f"{work_dir}{compiled_model_name}")
     print(f"Exported compiled library to {compiled_model_name}")
 
 

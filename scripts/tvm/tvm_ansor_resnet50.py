@@ -7,7 +7,7 @@ from utils import getImage, export_library
 
 MODEL_NAME = "resnet50"
 # #################### CONFIGURE BEFORE RUNNING #####################
-WORK_DIR = "Results/TVM-Ansor/resnet50/A100"
+WORK_DIR = "Results/TVM-Ansor/resnet50/A100/"
 # TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
 TARGET_NAME = "nvidia/nvidia-a100"
 # TARGET_NAME = "nvidia/tesla-p100"
