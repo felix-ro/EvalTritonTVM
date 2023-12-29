@@ -14,7 +14,7 @@ MODEL_NAME = "matmul"
 # TARGET_NAME = "nvidia/tesla-p100"
 TARGET_NAME = "nvidia/nvidia-a100"
 WORK_DIR = "Results/TVM-MetaSchedule/matmul/A100/2250-trials/"
-MAX_TRIALS = 2250
+MAX_TRIALS = 100
 M = 2048  # dimensions of the square matrix
 # ###################################################################
 

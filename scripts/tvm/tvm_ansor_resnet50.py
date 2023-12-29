@@ -9,8 +9,8 @@ MODEL_NAME = "resnet50"
 # #################### CONFIGURE BEFORE RUNNING #####################
 WORK_DIR = "Results/TVM-Ansor/resnet50/A100"
 # TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
-# TARGET_NAME = "nvidia/nvidia-a100"
-TARGET_NAME = "nvidia/tesla-p100"
+TARGET_NAME = "nvidia/nvidia-a100"
+# TARGET_NAME = "nvidia/tesla-p100"
 MAX_TRIALS = 50
 # ###################################################################
 
@@ -81,7 +81,7 @@ def main():
     # compile model with history best
     lib = compile(log_file, mod, target, params)
 
-    export_library(lib=lib, model_name=MODEL_NAME, work_dir=WORK_DIR, max_trials=MAX_TRIALS)
+    export_library(lib=lib, model_name=MODEL_NAME, work_dir=WORK_DIR, max_trials=MAX_TRIALS, target_name=TARGET_NAME)
 
     # create graph executor
     module, dev = createGraphExecutor(target, lib, input_shape, dtype)
