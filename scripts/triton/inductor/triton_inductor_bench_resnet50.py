@@ -112,14 +112,14 @@ def time_cuda(opt_model, model, device, input_batch, reps, iters):
         "-optimized-" + str(device) + ".txt"
     f = open(file_name, "w")
     for res in opt_model_results:
-        f.write(str(res) + " ms\n")
+        f.write(str(res) + "\n")
     f.close()
 
     file_name = PATH + "/" + "results-" + MODEL_NAME + \
         "-unoptimized-" + str(device) + ".txt"
     f = open(file_name, "w")
     for res in model_results:
-        f.write(str(res) + " ms\n")
+        f.write(str(res) + "\n")
     f.close()
 
 
