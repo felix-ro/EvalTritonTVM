@@ -147,12 +147,7 @@ def get_max_tune_params():
             for block_k in [32, 64, 128]:
                 for block_n in [16, 32, 64, 128, 256]:
                     num_warps = 2 if block_n <= 64 else 4
-                    configs.append(
-                        triton.Config({'BLOCK_SIZE_M': block_m, 'BLOCK_SIZE_N': block_n, 'BLOCK_SIZE_K': block_k,
-                                       'GROUP_SIZE_M': 8},
-                                      num_stages=num_stages, num_warps=num_warps))
-                    # split_k
-                    for group_size_m in [2, 4, 8, 16]:
+                    for group_size_m in [1, 2, 4, 8, 16]:
                         configs.append(triton.Config({'BLOCK_SIZE_M': block_m, 'BLOCK_SIZE_N': block_n,
                                                       'BLOCK_SIZE_K': block_k, 'GROUP_SIZE_M': group_size_m},
                                                      num_stages=num_stages, num_warps=num_warps,))
