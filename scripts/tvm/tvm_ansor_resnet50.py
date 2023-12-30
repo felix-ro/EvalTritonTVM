@@ -48,26 +48,35 @@ def createGraphExecutor(target, lib, input_shape, dtype):
 
 
 def main():
-    model = torch.hub.load('pytorch/vision:v0.10.0', MODEL_NAME, pretrained=True)
-    model.eval()
+    # model = torch.hub.load('pytorch/vision:v0.10.0', MODEL_NAME, pretrained=True)
+    # model.eval()
 
-    # We grab the TorchScripted model via tracing
-    input_shape = [1, 3, 224, 224]
-    input_data = torch.randn(input_shape)
-    scripted_model = torch.jit.trace(model, input_data).eval()
+    # # We grab the TorchScripted model via tracing
+    # input_shape = [1, 3, 224, 224]
+    # input_data = torch.randn(input_shape)
+    # scripted_model = torch.jit.trace(model, input_data).eval()
 
-    # Creating Relay Graph
-    img = getImage()
-    input_name = "input0"
-    shape_list = [(input_name, img.shape)]
-    mod, params = relay.frontend.from_pytorch(scripted_model, shape_list)
+    # # Creating Relay Graph
+    # img = getImage()
+    # input_name = "input0"
+    # shape_list = [(input_name, img.shape)]
+    # mod, params = relay.frontend.from_pytorch(scripted_model, shape_list)
 
     # Selecting target and preparing logging
     target = tvm.target.Target(TARGET_NAME)
     batch_size = 1
     layout = "NHWC"
     dtype = "float32"
+    input_shape = (1, 224, 224, 3)
     log_file = "%s-%s-B%d-%s.json" % (MODEL_NAME, layout, batch_size, target.kind.name)
+
+    mod, params = tvm.relay.testing.resnet.get_workload(
+        num_layers=50,
+        batch_size=batch_size,
+        layout=layout,
+        dtype=dtype,
+        image_shape=input_shape,
+    )
 
     # Extract tasks
     tasks, task_weights = auto_scheduler.extract_tasks(mod["main"], params, target)
