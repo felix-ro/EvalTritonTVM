@@ -2,15 +2,16 @@ import torch  # IMPORT TORCH BEFORE TVM TO AVOID SYMBOL CLASH
 import numpy as np
 import tvm
 from tvm import relay, auto_scheduler
+from tvm.relay import testing
 
 from utils import getImage, export_library
 
 MODEL_NAME = "resnet50"
 # #################### CONFIGURE BEFORE RUNNING #####################
-WORK_DIR = "Results/TVM-Ansor/resnet50/A100/"
+WORK_DIR = "Results/TVM-Ansor/resnet50/P100/"
 # TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
-TARGET_NAME = "nvidia/nvidia-a100"
-# TARGET_NAME = "nvidia/tesla-p100"
+# TARGET_NAME = "nvidia/nvidia-a100"
+TARGET_NAME = "nvidia/tesla-p100"
 MAX_TRIALS = 50
 # ###################################################################
 
@@ -68,14 +69,15 @@ def main():
     layout = "NHWC"
     dtype = "float32"
     input_shape = (1, 224, 224, 3)
+    image_shape = (224, 224, 3)
     log_file = "%s-%s-B%d-%s.json" % (MODEL_NAME, layout, batch_size, target.kind.name)
 
-    mod, params = tvm.relay.testing.resnet.get_workload(
+    mod, params = relay.testing.resnet.get_workload(
         num_layers=50,
         batch_size=batch_size,
         layout=layout,
         dtype=dtype,
-        image_shape=input_shape,
+        image_shape=image_shape,
     )
 
     # Extract tasks
