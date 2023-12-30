@@ -1,4 +1,3 @@
-import torch  # IMPORT TORCH BEFORE TVM TO AVOID SYMBOL CLASH
 import numpy as np
 import tvm
 from tvm import relay, auto_scheduler
@@ -8,11 +7,11 @@ from utils import getImage, export_library
 
 MODEL_NAME = "resnet50"
 # #################### CONFIGURE BEFORE RUNNING #####################
-WORK_DIR = "Results/TVM-Ansor/resnet50/P100/"
+WORK_DIR = "Results/TVM-Ansor/resnet50/A100/"
 # TARGET_NAME = "llvm -num-cores 16 -mcpu=skylake"
-# TARGET_NAME = "nvidia/nvidia-a100"
-TARGET_NAME = "nvidia/tesla-p100"
-MAX_TRIALS = 50
+TARGET_NAME = "nvidia/nvidia-a100"
+#TARGET_NAME = "nvidia/tesla-p100"
+MAX_TRIALS = 100
 # ###################################################################
 
 
@@ -44,31 +43,16 @@ def createGraphExecutor(target, lib, input_shape, dtype):
     dev = tvm.device(str(target), 0)
     module = tvm.contrib.graph_executor.GraphModule(lib["default"](dev))
     data_tvm = tvm.nd.array((np.random.uniform(size=input_shape)).astype(dtype))
-    module.set_input("input0", data_tvm)
+    module.set_input("data", data_tvm)
     return module, dev
 
 
 def main():
-    # model = torch.hub.load('pytorch/vision:v0.10.0', MODEL_NAME, pretrained=True)
-    # model.eval()
-
-    # # We grab the TorchScripted model via tracing
-    # input_shape = [1, 3, 224, 224]
-    # input_data = torch.randn(input_shape)
-    # scripted_model = torch.jit.trace(model, input_data).eval()
-
-    # # Creating Relay Graph
-    # img = getImage()
-    # input_name = "input0"
-    # shape_list = [(input_name, img.shape)]
-    # mod, params = relay.frontend.from_pytorch(scripted_model, shape_list)
-
     # Selecting target and preparing logging
     target = tvm.target.Target(TARGET_NAME)
     batch_size = 1
     layout = "NHWC"
     dtype = "float32"
-    input_shape = (1, 224, 224, 3)
     image_shape = (224, 224, 3)
     log_file = "%s-%s-B%d-%s.json" % (MODEL_NAME, layout, batch_size, target.kind.name)
 
@@ -95,7 +79,7 @@ def main():
     export_library(lib=lib, model_name=MODEL_NAME, work_dir=WORK_DIR, max_trials=MAX_TRIALS, target_name=TARGET_NAME)
 
     # create graph executor
-    module, dev = createGraphExecutor(target, lib, input_shape, dtype)
+    module, dev = createGraphExecutor(target, lib, image_shape, dtype)
 
     # Evaluate
     print("Evaluate inference time cost...")

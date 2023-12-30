@@ -15,7 +15,7 @@ COMPILED_LIB_NAME = "resnet50-cuda-15000.so"
 def set_up_workload(lib: tvm.runtime.Module, device: tvm.runtime.Device):
     module = graph_executor.GraphModule(lib["default"](device))
 
-    input_tvm = tvm.nd.array(np.random.uniform((1, 3, 224, 224)).astype(np.float32))
+    input_tvm = tvm.nd.array((np.random.uniform(size=(224, 224, 3))).astype("float32"))
     input = {"data": input_tvm}
     module.set_input(**input)
     return module
