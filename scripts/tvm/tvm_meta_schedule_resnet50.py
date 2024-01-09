@@ -1,9 +1,8 @@
-import torch  # IMPORT TORCH BEFORE TVM TO AVOID SYMBOL CLASH
 import tvm
-from tvm import relay
+from tvm.relay import testing
 import sys
 
-from utils import getImage, export_library, save_results
+from utils import export_library, save_results
 from meta_schedule_utils import tune, build
 
 MODEL_NAME = "resnet50"
@@ -13,15 +12,11 @@ MODEL_NAME = "resnet50"
 # TARGET_NAME = "nvidia/nvidia-a100"
 TARGET_NAME = "nvidia/tesla-p100"
 WORK_DIR = "Results/TVM-MetaSchedule/resnet50/"
-MAX_TRIALS = 100
+MAX_TRIALS = 10000
 # ###################################################################
 
 
 def main():
-    model = torch.hub.load('pytorch/vision:v0.10.0', MODEL_NAME, pretrained=True)
-    model.to("cuda")
-    model.eval()
-
     target = tvm.target.Target(TARGET_NAME)
     build_only = False
 
@@ -31,16 +26,20 @@ def main():
         global MAX_TRIALS  # sketchy
         MAX_TRIALS = 0
 
-    # We grab the TorchScripted model via tracing
-    input_shape = [1, 3, 224, 224]
-    input_data = torch.randn(input_shape, device="cuda")
-    scripted_model = torch.jit.trace(model, input_data).eval()
+    # Selecting target and preparing logging
+    target = tvm.target.Target(TARGET_NAME)
+    batch_size = 1
+    layout = "NHWC"
+    dtype = "float32"
+    image_shape = (224, 224, 3)
 
-    # Creating Relay Graph
-    img = getImage()
-    input_name = "input0"
-    shape_list = [(input_name, img.shape)]
-    mod, params = relay.frontend.from_pytorch(scripted_model, shape_list)
+    mod, params = testing.resnet.get_workload(
+        num_layers=50,
+        batch_size=batch_size,
+        layout=layout,
+        dtype=dtype,
+        image_shape=image_shape,
+    )
 
     # Build/tune the model and export library
     graph_module = None
